@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<th:block th:fragment="menu">
+	<li class="main-menu">
+		<a href="#">
+			<th:block th:text="#{header.menuTracker}" />
+		</a>
+		<ul>
+			<li>
+				<a th:href="@{/tracker/overall}">
+					<th:block th:text="#{header.menuOverall}" />
+				</a>
+			</li>
+			<li>
+				<a th:href="@{/tracker/component}">
+					<th:block th:text="#{header.menuComponent}" />
+				</a>
+			</li>
+			<li>
+				<a th:href="@{/tracker/live}">
+					<th:block th:text="#{header.menuLive}" />
+				</a>
+			</li>
+			<li>
+				<a th:href="@{/tracker/complexity}">
+					<th:block th:text="#{header.menuComplexity}" />
+				</a>
+			</li>
+		</ul>
+	</li>
+</th:block>
+</body>
+</html>
