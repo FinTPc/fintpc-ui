@@ -1,0 +1,124 @@
+<!-- 
+* FinTP - Financial Transactions Processing Application
+* Copyright (C) 2013 Business Information Systems (Allevo) S.R.L.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>
+* or contact Allevo at : 031281 Bucuresti, 23C Calea Vitan, Romania,
+* phone +40212554577, office@allevo.ro <mailto:office@allevo.ro>, www.allevo.ro. -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<meta charset="ISO-8859-1" />
+<title><th:block th:text="${title}" /></title>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>  
+  <script th:src="@{/libs/jquery-ui-1.12.1/jquery-ui.js}" />
+</head>
+<body class="modal">
+	<input id="apiUri" type="hidden" th:value="${apiUri}" />
+	<form method="post" th:action="${formAction}" style="margin: 2% 18%;"
+		th:object="${connect}">
+		<input type="hidden" th:field="*{id}" />
+		<table class="centeredTable" style="width: auto;">
+			<tbody>
+			<tr>
+				<td><th:block th:text="#{connect.bank_name}" />:</td>
+				<td><select name="bic" id="bic" th:field="*{bic}"
+						style="text-align: left;" th:required="required">
+							<option value=""></option>
+							<option th:each="bank : ${banks}"
+								th:value="${bank.bic}" th:text="${bank.name}" />
+					</select></td>
+				</tr>
+				<tr>
+					<td><th:block th:text="#{connect.client_id}" />:</td>
+					<td><input id="ClientId" type="text" th:field="*{clientId}"
+						maxlength="35" th:required="required" /></td>
+				</tr>
+				<tr>
+					<td><th:block th:text="#{connect.client_secret}" />:</td>
+					<td><input id="clientSecret" type="text" th:field="*{clientSecret}"
+						maxlength="235" th:required="required" /></td>
+				</tr>
+				<tr>
+					<td><th:block th:text="#{connect.user_id}" />:</td>
+					<td><input id="userId" type="text" th:field="*{userId}"
+						maxlength="235" th:required="required" /></td>
+				</tr>
+				<tr>
+					<td><th:block th:text="#{connect.user_secret}" />:</td>
+					<td><input id="userSecret" type="text" th:field="*{userSecret}"
+						maxlength="235" th:required="required" /></td>
+				</tr>
+				<tr>
+					<td><th:block th:text="#{connect.access_token_uri}" />:</td>
+					<td><input id="accesTokenUri" type="text" th:field="*{accessTokenUri}"
+						maxlength="235" th:required="required" /></td>
+				</tr>
+				<tr>
+					<td><th:block th:text="#{connect.user_authorization_uri}" />:</td>
+					<td><input id="userAuthorizationUri" type="text" th:field="*{userAuthorizationUri}"
+						maxlength="235" th:required="required" /></td>
+				</tr>
+				<tr>
+					<td><th:block th:text="#{connect.redirect_uri}" />:</td>
+					<td><input id="redirectUri" type="text" th:field="*{redirectUri}"
+						maxlength="235" th:required="required" /></td>
+				</tr>
+				<tr>
+					<td><th:block th:text="#{connect.user_info_uri}" />:</td>
+					<td><input id="userInfoUri" type="text" th:field="*{userInfoUri}"
+						maxlength="235" th:required="required" /></td>
+				</tr>
+				<tr>
+					<td><th:block th:text="#{consent.url}" />:</td>
+					<td><input id="consentEntityUrl" type="text" th:field="*{consentEntity.url}"
+						maxlength="235" th:required="required" /></td>
+				</tr>
+				<!-- <tr>
+					<td><th:block th:text="#{connect.expiration_date}" />:</td>
+					<td><input id="datepicker" type="hidden" th:field="*{expiration_date}" /></td>
+				</tr> -->
+				<tr>
+					<td><th:block th:text="#{connect.grant_type}" />:</td>
+					<td><input id="grandType" type="text" th:field="*{grantType}"
+						maxlength="235" th:required="required" /></td>
+				</tr>
+				<tr>
+					<td><th:block th:text="#{connect.authentication_scheme}" />:</td>
+					<td><input id="authenticationScheme" type="text" th:field="*{authenticationScheme}"
+						maxlength="235" th:required="required" /></td>
+				</tr>
+				<tr>
+					<td><th:block th:text="#{connect.client_authentication_scheme}" />:</td>
+					<td><input id="clientAuthenticationScheme" type="text" th:field="*{clientAuthenticationScheme}"
+						maxlength="235" th:required="required" />
+						<input id="add" type="hidden" th:field="*{token}" /></td>
+				</tr>
+				
+			</tbody>
+		</table>
+		<script>
+			if ($('form').attr('action') == "update"){
+				$('#bic').attr('disabled', true);
+			}
+			
+		</script>
+	</form>
+
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!-- 
+* FinTP - Financial Transactions Processing Application
+* Copyright (C) 2013 Business Information Systems (Allevo) S.R.L.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>
+* or contact Allevo at : 031281 Bucuresti, 23C Calea Vitan, Romania,
+* phone +40212554577, office@allevo.ro <mailto:office@allevo.ro>, www.allevo.ro. -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<th:block th:replace="fragments/fragments::libs"></th:block>
+<script th:src="@{/libs/multiselect/multiselect.min.js}"></script>
+
+<script type="text/javascript" th:inline="javascript">
+	//<![CDATA[
+		
+	$(function(){
+		function readTemplateValue(operation){
+			var template = {};
+			template.id = $('#id').val();
+			template.txtemplatesconfig = {};
+			template.txtemplatesdetaileds = fields;
+			template.name= $("#templateName").val();
+			template.txtemplatesconfig.id = $('#messageType').select().val();
+			template.type = $('input[name="type"]:checked').val();
+	
+			template.txtemplatesgroups = [];
+			$("#multiselect_to > option").each(function(){
+				var id = (this.id == 'undefined' ? null:(this.id == ''?null: this.id));
+				template.txtemplatesgroups.push({groupid: this.value, id: id});
+			});
+	
+			$.ajax({
+				type: "POST",
+				url: operation,
+				data: {template: JSON.stringify(template)},
+				dataType: 'json',
+				beforeSend: function(xhr){
+					var csrfToken = $('#_csrf').attr("content");
+					var csrfHeader = $('#_csrf_header').attr("content");
+		            xhr.setRequestHeader(csrfHeader, csrfToken);
+		            $('#loader').css("display", "block");
+			    },
+				success: function(data) {
+					location.reload();
+				},
+				error: function(data) {				
+				},
+				complete: function(){
+					$('#loader').css('display', 'none');
+				}
+			});
+		}
+		
+		function checkPattern(elem, pattern){
+			var reg = new RegExp(pattern);
+			if(false == reg.test(elem.val())){
+				if (elem.parent().children().length > 1){
+					elem.parent().children('span').remove();
+				}
+				elem.parent().append('<span class="errorMessage">required field</span>');
+				return false;
+			}
+			return true;
+		}
+		
+		var table = $('<table >').addClass("fintpTable display").css("width", "100%");
+		$('.table-wrapper').append(table);
+		var fields = [];
+
+		table.datatablesInit({
+			actions: {
+				add: {
+					url: 'templates/add',
+					label: [[#{template.newTemplate}]],
+					before: function(){
+						var rezult = [];
+						var max = $('#templateName').attr('pattern');
+						rezult.push(checkPattern($('#templateName'), max));
+						$("#xpathsArea").find("[id]").each(function(){
+							var pattern = $(this).attr('pattern');
+							if (undefined != pattern){
+								rezult.push(checkPattern($(this), pattern));
+							}
+							$("#xpathsArea").find("input").each(function(){
+								var id = (this.id == 'undefined' ? null:(this.id == ''?null: this.id));
+								var field = {value: $(this).val(), id: id,txtemplatesconfigdetailed:{id:$(this).attr("data-id"), fieldid:$(this).attr("data-id")}};
+								fields.push(field);
+							})
+							$("#xpathsArea").find("select").each(function(){
+								var id = (this.id == 'undefined' ? null:(this.id == ''?null: this.id));
+								var field = {value: $(this).val(), id: id,txtemplatesconfigdetailed:{id:$(this).attr("data-id"), fieldid:$(this).attr("data-id")}};
+								fields.push(field);
+							})
+						})
+						return rezult.includes(false);
+					}
+				},
+				get: 'templates/page', 
+				edit: {
+					url: 'templates/{rowid}/edit',
+					before: function(){
+						var rezult = true;
+						$("#xpathsArea").find("[id]").each(function(){
+							var pattern = $(this).attr('pattern');
+							if (undefined != pattern){
+								var reg = new RegExp(pattern);
+								if(false == reg.test($(this).val())){
+									if ($(this).parent().children().length > 1){
+										$(this).parent().children('span').remove();
+									}
+									$(this).parent().append('<span class="errorMessage">required field</span>');
+									window.rezult = false;
+								}
+							}
+							var id = (this.id == 'undefined' ? null:(this.id == ''?null: this.id));
+							var field = {value: $(this).val(), id: id,txtemplatesconfigdetailed:{id:$(this).attr("data-id"), fieldid:$(this).attr("data-id")}};
+							fields.push(field);
+						})
+						return window.rezult;
+					}
+				},
+				delete: {
+					url: "templates/{rowid}/delete",
+					confirm: $$messages["template.confirm.delete"] 
+				}
+			},
+			saveAction:function(){
+				readTemplateValue("templates/insert");
+			},
+			editAction:function(){
+				readTemplateValue("templates/update");
+			},
+			columns: [ 
+				{ "title": [[#{template.name}]], "data": "name" },
+				{ "title": [[#{template.type}]], "data": "type" , 
+					render: function ( data, type, row, meta ) {
+						return (row.type==0?"Simple":"Multiple");
+					}  
+				},
+				{ "title": [[#{template.entity}]], "data": "entity" },
+				
+			]
+		});
+		$('#multiselect').multiselect();
+	});
+	
+	//]]>
+</script>
+
+<meta charset="ISO-8859-1" />
+<title><th:block th:text="${title}" /></title>
+</head>
+<body>
+	<header th:replace="fragments/fragments::header"></header>
+	<div class="content">
+		<div class="table-wrapper"></div>
+	</div>
+
+	<footer th:replace="fragments/fragments::footer" id="footer"></footer>
+</body>
+</html>

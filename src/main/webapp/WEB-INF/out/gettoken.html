@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+<form method="POST" enctype="application/x-www-form-urlencoded" action="https://api.apistorebt.ro/bt/sb/oauth/token">
+<input id="grandtype" th:value="${grandtype}"/>
+<input id="redirect" th:value="${redirect}" />
+<input id="code" th:value="${code}" />
+<input id="client_id" th:value="${client_id}" />
+<input id="client_secret" th:value="${client_secret}" />
+<input id="code_verifier" th:value="${code_verifier}" />
+<input type="submit" value="send"/>
+</form>
+</body>
+</html>

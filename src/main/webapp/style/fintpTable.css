@@ -1,0 +1,283 @@
+.fintpTable{
+	background-color:  #efefef;
+	font-family: Helvetica, sans-serif;
+	font-size: 12px;
+	line-height: 24px;
+	margin-left: auto;
+	margin-right: auto;
+	width:75%;
+}
+ 
+.fintpTable > thead > tr > th,
+.fintpTable > thead > tr > td,
+.fintpTable > tbody > tr > td {
+/* 	overflow: hidden; */
+	padding-left: 3px;
+	padding-right: 3px;
+	position: relative;
+	word-wrap: break-word;
+	/* width: 100px; */
+}
+
+.fintpTable > tbody > tr > td{
+	border: 1px solid #efefef;
+}
+
+.fintpTable > thead > tr > th{
+	border: 0;
+	vertical-align: middle;
+}
+
+.fintpTable > tbody > tr > td:last-child{
+	width:90px;
+}
+
+.centered{
+	text-align: center;
+}
+
+.fintpTable tr:nth-child(odd){ 
+	background-color:white; 
+}
+
+.fintpTable td.actions {
+	width: 1%;
+	white-space: nowrap;
+	text-align: center;
+}
+
+.fintpTable ul.toggle {
+	list-style-type: none;
+	padding: 0px;
+}
+
+.fintpTable ul.toggle li {
+	margin-left: 16px;
+	cursor: pointer;
+	
+	-webkit-touch-callout: none;
+	-webkit-user-select: none; /* Webkit */
+	-moz-user-select: none;    /* Firefox */
+	-ms-user-select: none;     /* IE 10  */
+	
+	/* Currently not supported in Opera but will be soon */
+	-o-user-select: none;
+	user-select: none;  
+}
+
+.fintpTable > thead > tr > th {
+	background: -o-linear-gradient(bottom, #757575 5%, #b2b2b2 100%);
+/* 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #666666 */
+/* 		), color-stop(1, #b2b2b2)); */
+/* 	background: -moz-linear-gradient(center top, #757575 5%, #b2b2b2 100%); */
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#757575",
+		endColorstr="#b2b2b2");
+	background: -o-linear-gradient(top, #757575, b2b2b2);
+	background-color: #442080 !important;; 
+	text-align: center;
+	font-weight: bold;
+	font-size: 14px;
+	color: white;
+}
+
+.fintpTable .selected {
+	background-color: #97bbf4 !important;
+}
+
+.fintpTable .filterTh {
+	'background' : '#fff',
+	'padding' : '8px 10px',
+	'border' : '1px solid',
+	'border-color' : '#efefef',
+	'border-bottom' : '1px solid #ddd'
+}
+
+#userTable td:nth-child(2) {
+	cursor: pointer;
+}
+
+.pui-paginator{
+	margin-left: auto;
+	margin-right: auto;
+	width:75%;
+}
+
+
+.fintpRequestsLabel tr td{
+	padding-left: 20px;
+	padding-right: 20px;
+	
+}
+
+.routeCheckbox{
+	vertical-align: middle;
+}
+
+.batchInfo{
+	color: blue;
+}
+
+.dialogButton {
+  display: inline-block;
+  position: relative;
+  background-color: #442080;
+  background-image: linear-gradient( /* chrome */
+    hsla(0, 0%, 100%, 0.6), hsla(0, 0%, 100%, 0) 50%,
+    hsla(0, 0%, 0%, 0.3) 50%, hsla(0, 0%, 100%, 0.2)
+  );
+  font-size: 16px;
+  font-family: sans-serif;
+  font-weight: bold;
+  color: white;
+  padding: 10px 20px;
+  text-shadow:
+    0 0 15px hsla(0, 0%, 100%, 1), /* bloom */
+    0 2px 4px hsla(0, 0%, 0%, 0.7); /* drop shadow */
+  border: none;
+  border-radius: 10px;
+  box-shadow:
+    inset 0 -5px 20px hsla(0, 0%, 0%, 0.4), /* top light */
+    inset 0 5px 20px hsla(0, 0%, 100%, 0.4), /* bottom shadow */
+    /* multiple light sources yall */
+    5px 8px 10px hsla(0, 0%, 0%, 0.2); /* drop shadow 2 */
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.submitButton {
+  display: inline-block;
+  position: relative;
+  background-color: #442080;
+  background-image: linear-gradient( /* chrome */
+    hsla(0, 0%, 100%, 0.6), hsla(0, 0%, 100%, 0) 50%,
+    hsla(0, 0%, 0%, 0.3) 50%, hsla(0, 0%, 100%, 0.2)
+  );
+  font-size: 16px;
+  font-family: sans-serif;
+  font-weight: bold;
+  color: white;
+  padding: 10px 20px;
+  text-shadow:
+    0 0 15px hsla(0, 0%, 100%, 1), /* bloom */
+    0 2px 4px hsla(0, 0%, 0%, 0.7); /* drop shadow */
+  border: none;
+  border-radius: 10px;
+  margin-left: 10%;
+  margin-bottom:20px;
+  margin-top:20px;
+  box-shadow:
+    inset 0 -5px 20px hsla(0, 0%, 0%, 0.4), /* top light */
+    inset 0 5px 20px hsla(0, 0%, 100%, 0.4), /* bottom shadow */
+    /* multiple light sources yall */
+    5px 8px 10px hsla(0, 0%, 0%, 0.2); /* drop shadow 2 */
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+/* highlight */
+.submitButton:before {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  top: 5px;
+  height: 15px;
+  border-radius: 15px;
+
+}
+
+
+.submitButton:hover:enabled {
+  transform: scale(1.05);
+  box-shadow:
+    inset 0 -5px 20px hsla(0, 0%, 0%, 0.2), /* top light */
+    inset 0 5px 20px hsla(0, 0%, 100%, 0.2), /* bottom shadow */
+    /* multiple light sources yall */
+    1px 10px 10px hsla(0, 0%, 0%, 0.2); /* drop shadow 2 */
+}
+button:disabled
+ {
+     background: none repeat scroll 0 0 grey;
+     cursor: default !important;
+     Text-Decoration: None !important; 
+     pointer-events: none;
+ }
+        
+form select{
+	width: 100%;
+}
+
+form input[type='submit']{
+	width: inherit;
+}
+
+
+.table-wrapper {
+ 	 display: table;
+ 	 margin: auto;
+ 	 bottom: 30px;
+/*   -webkit-transform: translate(0%, 0%); */
+}
+
+table.dataTable > thead > tr > th, table.dataTable > thead > tr > td {
+    padding: 10px 10px;
+}
+
+.modal-body-scroll {
+	overflow-y: auto;
+	height: 80vh; 
+}
+
+/* add loader */
+
+#loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: 150px;
+  height: 150px;
+  margin: -75px 0 0 -75px;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #90CCEE;
+  border-bottom: 16px solid #442080;
+  border-left: 16px solid rgb(229,0,132);
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+  display: none;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Add animation to "page content" */
+.animate-bottom {
+  position: relative;
+  -webkit-animation-name: animatebottom;
+  -webkit-animation-duration: 1s;
+  animation-name: animatebottom;
+  animation-duration: 1s
+}
+
+@-webkit-keyframes animatebottom {
+  from { bottom:-100px; opacity:0 } 
+  to { bottom:0px; opacity:1 }
+}
+
+@keyframes animatebottom { 
+  from{ bottom:-100px; opacity:0 } 
+  to{ bottom:0; opacity:1 }
+}
+
+/* end load loader */

@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: FinTP_UI
+Implementation-Version: 0.2.5
+Built-By: denisdobos
+Implementation-Vendor-Id: ro.allevo.fintp
+Build-Jdk: 1.8.0_241
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
+ ot-starter-parent/FinTP_UI
+Created-By: Maven Integration for Eclipse
+

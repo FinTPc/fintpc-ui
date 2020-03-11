@@ -1,0 +1,9 @@
+@charset "ISO-8859-1";
+.consent_left{
+	width: 50%;
+	float: left;
+	text-align: right;
+}
+.consent_right{
+	width: 50%;	
+}

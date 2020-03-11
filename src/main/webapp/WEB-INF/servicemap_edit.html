@@ -1,0 +1,111 @@
+<!-- 
+* FinTP - Financial Transactions Processing Application
+* Copyright (C) 2013 Business Information Systems (Allevo) S.R.L.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>
+* or contact Allevo at : 031281 Bucuresti, 23C Calea Vitan, Romania,
+* phone +40212554577, office@allevo.ro <mailto:office@allevo.ro>, www.allevo.ro. -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<script th:inline="javascript">
+	$(function(){
+		$('#duplicateCheck').click(function(){
+			toggle();
+		});
+	});
+	
+	if (!$('#duplicateCheck').prop('checked'))		
+		toggle(); //first sync
+	
+	function toggle() {
+		$('.checkDuplicates').toggle();
+		$('.checkDuplicates').find('input,select').val("");
+	}
+</script>
+
+
+
+<meta charset="ISO-8859-1" />
+<title><th:block th:text="${title}" /></title>
+</head>
+<body style="margin: 2px;">
+		<input id="apiUri" type="hidden" value="${apiUri}" />
+
+		<form method="post" th:action="${formAction}" style="margin: 2% 3%;" th:object="${servicemap}">
+			<input th:name="id" type="hidden"	th:value="${servicemap.id}" />
+			<input th:field="*{ioIdentifier}" type="hidden"/>
+			<input th:field="*{serviceType}" type="hidden"/>
+			<table class="centeredTable">
+				<tbody>
+					<tr>
+						<td><th:block th:text="#{services.name}" />:</td>
+						<td><input th:field="*{name}" readonly="readonly"/></td>
+					</tr>
+					<tr>
+						<td><th:block th:text="#{services.application}" />:</td>
+						<td><input th:field="*{partner}"  readonly="readonly" /></td>
+					</tr>			
+					<tr>
+						<td><th:block th:text="#{services.checkDuplicates}"/>:</td>
+							<td><input type="checkbox" id="duplicateCheck" name="duplicateCheck" th:field="*{duplicateCheck}" value="1" /></td>
+					</tr>
+					<tr class="checkDuplicates">
+						<td><th:block th:text="#{services.duplicatesQueueName}" />:</td>
+						<td><select id = "duplicateQueue" th:field="*{duplicateQueue}">
+								<option value=""></option>
+								<th:block th:each="queueName : ${queues}">
+									<option th:value="${queueName}" th:name="${queueName}"
+										th:text="${queueName}"></option>
+								</th:block>
+						</select></td>
+					</tr>
+					<tr class="checkDuplicates">
+						<td><th:block th:text="#{services.duplicateMap}" />:</td>
+						<td><input id="duplicateMap" type="text" th:field="*{duplicateMap}" placeholder="XSLT file name" style="width:200px"/></td>
+					</tr>
+					<tr class="checkDuplicates">
+						<td><th:block th:text="#{services.duplicateNotifQueueName}" />:</td>
+						<td><select th:field="*{duplicateNotificationQueue}">
+								<option value=""></option>
+								<th:block th:each="queueName : ${queues}">
+									<option th:value="${queueName}" th:name="${queueName}"
+										th:text="${queueName}"></option>
+								</th:block>
+						</select></td>
+					</tr>
+					<tr>
+						<td><th:block th:text="#{services.delayedQueueName}" />:</td>
+						<td><select th:field="*{delayedNotificationQueue}">
+								<option value=""></option>
+								<th:block th:each="queueName : ${queues}">
+									<option th:value="${queueName}" th:name="${queueName}"
+										th:text="${queueName}"></option>
+								</th:block>
+						</select></td>
+					</tr>
+					<tr>
+						<td style="vertical-align: top;"><th:block th:text="#{services.exitPoint}" />:</td>
+						<td><textarea th:field="*{exitPoint}" maxlength="500" style="height:200px; width: 200px;" /></td>
+					</tr>
+
+				</tbody>
+			</table>
+		</form>
+	
+</body>
+</html>

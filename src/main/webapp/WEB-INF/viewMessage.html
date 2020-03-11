@@ -1,0 +1,224 @@
+<!-- 
+* FinTP - Financial Transactions Processing Application
+* Copyright (C) 2013 Business Information Systems (Allevo) S.R.L.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>
+* or contact Allevo at : 031281 Bucuresti, 23C Calea Vitan, Romania,
+* phone +40212554577, office@allevo.ro <mailto:office@allevo.ro>, www.allevo.ro. -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<th:block th:replace="fragments/fragments::libs"></th:block>
+
+<script th:src="@{/scripts/jstree.min.js}"></script>
+
+<link th:href="@{/style/app.css}"  rel="stylesheet" type="text/css"  />
+<link th:href="@{/style/content.css}"  rel="stylesheet" type="text/css"  />
+<link th:href="@{/style/fintpTable.css}" rel="stylesheet" />
+<link th:href="@{/style/jstree/style.min.css}" rel="stylesheet" />
+<style>
+.modal-header {
+			background-color: #442080;
+		}
+</style>
+
+
+<meta charset="ISO-8859-1" />
+<title><th:block th:text="${title}" /></title>
+</head>
+<body class="modal">
+	<th:block th:switch="${#lists.isEmpty(message)}">
+		<th:block th:case="true">
+	        No message with the specified id was found.
+		</th:block>
+		<th:block th:case="false">
+
+			<table width="100%" style="table-layout: fixed;">
+				<tr>
+					<td width="70%">
+						<th:block th:if="${payload != null}">
+							<button  th:if="${action=='view'}" id="expand" class="messageAction submitButton glossy-button glossy-button--purple addButton" style="font-weight:bold;cursor:pointer;">Expand all</button>
+							<button  th:if="${action=='view'}" id="collapse" class="messageAction submitButton glossy-button glossy-button--purple addButton" style="font-weight:bold;cursor:pointer;">Collapse all</button>
+							<button id="save" th:if="${action=='edit'}"  class="messageAction submitButton glossy-button glossy-button--purple addButton" style="font-weight:bold;cursor:pointer;" type="button">Save</button>
+							<div id="xmlTree" th:include="fragments/fragments::xmlView(parent=${payload.getDocumentElement()})"></div>
+						</th:block>
+						<div th:if="${payloadString != null}" th:utext="${payloadString}"></div>
+						<script th:inline="javascript">
+							/*<![CDATA[*/
+							var dropDowns = /*[[${dropDowns}]]*/ '';
+							var templateOptions = /*[[${templateOptions}]]*/ '';
+							var id = /*[[${id}]]*/ '';
+							var action = /*[[${action}]]*/ '';
+							//console.log(dropDowns, templateOptions)
+							$(function(){
+							    var selectedNode = {};
+								$('#loader').css("display", "none");
+								var tree = $('#xmlTree');
+								tree.jstree({
+									core : {
+										"check_callback" : true,
+									    themes : {
+									      icons : false
+									    }
+									  }
+								}).on('ready.jstree', function() {
+									tree.jstree('open_all');
+									if(action=="view"){
+										$('#xmlTree li').filter(function(){
+											return $(this).attr('aria-level') > 3;
+										}).each(function(i, node){
+											tree.jstree('close_node', node);
+										});
+									}else{
+										$("#xmlTree").find("span[data-type-editid]").each(function(index) {
+											var optionsId = $(this).attr("data-type-editid");
+											if(optionsId!='-1'){
+												console.log(optionsId)
+												//6: "timestamp" 7: "date" 8: "sequency"9: "visible"
+												var edit;
+												switch(optionsId){
+													case 'timestamp':edit = $("<input type='text' class='form-control dateTimePicker' id='selNodeValue'></input>");break;
+													case 'date':edit = $("<input type='text' class='form-control datePicker' id='selNodeValue'></input>");break;
+													case 'sequency':edit = $("<input type='text'  class='form-control' id='selNodeValue'></input>");break;
+													case 'fixvalue':edit = $("<input type='text' class='form-control' id='selNodeValue'></input>");break;
+													case 'editvalue':edit = $("<input type='text' class='form-control'></input>");break;
+													default: edit = $("<select id='selNodeValue'></select>");
+															 for(var i=0;i<dropDowns[optionsId].length;i++){
+																edit.append("<option>"+dropDowns[optionsId][i]+"</option>");
+															 } break;
+												}
+												edit.attr("data-path",$(this).attr("data-path"));
+												edit.attr("data-type-editid",$(this).attr("data-type-editid"));
+												edit.val($(this).html());
+												edit.css('display', 'initial')
+													.css('width', '35%')
+													.css('margin', '-5px 0px 7px');
+												$("#changeSelNode").css("display","");
+												
+												$(this).parent().parent().append(edit)
+												$(this).remove();
+											}
+										})
+										registerDateTime();
+									}
+								});
+								
+								$('#changeSelNode').click(function(){
+									$(selectedNode.el).html( $("#selNodeValue").val() )
+									$('#xmlTree').jstree('rename_node', selectedNode.node , selectedNode.elementName.prop("outerHTML") + $(selectedNode.el).prop("outerHTML") )
+								});
+								
+								$('#expand').click(function(){
+									tree.jstree('open_all');
+								});
+								
+								$('#collapse').click(function(){
+									tree.jstree('close_all');
+								});
+								
+								if(action=="edit"){
+									$("#save").click(function(){
+										var map = {};
+										$("[data-type-editid]").each(function(){
+											if($(this).attr("data-type-editid")!=-1)
+												map[$(this).attr("data-path")] = $(this).val();
+										});
+										//console.log(map)
+										$.ajax({
+							                type: "POST",
+							                url: id+"/save-payload",
+							                data: map,  
+							                dataType: "json",
+							                beforeSend: function(xhr){
+							    	            xhr.setRequestHeader($('#_csrf_header').attr("content"),
+							    	            					 $('#_csrf').attr("content"));
+							                },
+							                success: function (data) {
+							                	console.log(data);
+							                }
+							            });
+									})
+								}
+							});
+							/*]]>*/
+						</script>
+					</td>
+					<td>
+						<table class="fintpTable">
+							<tbody>
+								<tr>
+									<td><b><th:block th:text="#{reports.headerState}" /></b></td>
+									<td>
+										<th:block th:with='value = ${message.get("status")}'>
+											<th:block th:if="${value != null}" th:text="${value.asText()}" />
+										</th:block>
+									</td>
+								</tr>
+								<tr>
+									<td><b><th:block th:text="#{reports.headerOperationDetails}" /></b></td>
+									<td>
+										<th:block th:with='value = ${message.get("operationdetails")}'>
+											<th:block th:if="${value != null}" th:text="${value.asText()}" />
+										</th:block>
+									</td>
+								</tr>
+								<tr>
+									<td><b><th:block th:text="#{reports.headerSrcApp}" /></b></td>
+									<td>
+										<th:block th:with='value = ${message.get("requestorservice")}'>
+											<th:block th:if="${value != null}" th:text="${value.asText()}" />
+										</th:block>
+									</td>
+								</tr>
+								<tr>
+									<td><b><th:block th:text="#{reports.headerCurrentQueue}" /></b></td>
+									<td>
+										<th:block th:with='value = ${message.get("queuename")}'>
+											<th:block th:if="${value != null}" th:text="${value.asText()}" />
+										</th:block>
+									</td>
+								</tr>
+								<tr>
+									<td><b><th:block th:text="#{reports.headerSourceBatchid}" /></b></td>
+									<td>
+										<th:block th:with='value = ${message.get("sourcefilename")}'>
+											<th:block th:if="${value != null}" th:text="${value.asText()}" />
+										</th:block>
+									</td>
+								</tr>
+								<tr>
+									<td><b><th:block th:text="#{reports.headerDestinationBatchid}" /></b></td>
+									<td>
+										<th:block th:with='value = ${message.get("destinationfilename")}'>
+											<th:block th:if="${value != null}" th:text="${value.asText()}" />
+										</th:block>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<br>
+						
+						
+					</td>
+				</tr>
+			</table>
+
+		</th:block>
+	</th:block>
+
+</body>
+</html>

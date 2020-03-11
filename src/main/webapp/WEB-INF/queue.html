@@ -1,0 +1,212 @@
+<!-- 
+* FinTP - Financial Transactions Processing Application
+* Copyright (C) 2013 Business Information Systems (Allevo) S.R.L.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>
+* or contact Allevo at : 031281 Bucuresti, 23C Calea Vitan, Romania,
+* phone +40212554577, office@allevo.ro <mailto:office@allevo.ro>, www.allevo.ro. -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+	<th:block th:replace="fragments/fragments::libs"></th:block>
+	<script th:src="@{/scripts/queue.js}"></script>
+	
+	<meta charset="ISO-8859-1" />
+<title><th:block th:text="${title}" /></title>
+</head>
+<body >
+
+	<div th:replace="fragments/fragments::header"></div>
+
+	<div class="content">
+	
+	
+	<script th:inline="javascript">
+	
+	//<![CDATA[
+		var selActions = [[${selActions}]];
+		var grpActions = [[${grpActions}]];
+		var groups = {};
+		
+		
+		
+	 //]]>
+	</script>
+	<h3 id="queueName"><th:block th:text="${queueName}"/></h3>
+	
+
+	<th:block th:switch="${#lists.isEmpty(messageTypes)}">
+		<th:block th:case="true">
+			<th:block th:text="#{queue.noMessages}" />
+
+		</th:block>
+		<th:block th:case="false">
+			
+			<div>
+				<ul class="nav nav-tabs" role="tablist">
+					<th:block th:each="messageType, iter : ${messageTypes}" th:with="index=${iter.index}">
+						<li role="presentation" th:classappend="${index == 0} ? active : ''">
+							<a th:href="@{#tabs-__${messageType.getMessageType()}__}" 
+								th:aria-controls="tabs-__${messageType.getMessageType()}__" role="tab"  data-toggle="tab">
+								<th:block th:text="${messageType.getFriendlyName()}"/>
+							</a>
+						</li>
+					</th:block>
+				</ul>
+				<div class="tab-content">
+					<th:block th:each="msgType, iter : ${messageTypes}" th:with="messageType=${msgType.getMessageType()}, index=${iter.index}">
+							<div role="tabpanel" class="tab-pane" th:classappend="${index == 0} ? active : ''" th:id="${'tabs-' + messageType}">
+								<input type="hidden" name="messageType" th:value="${messageType}"></input>
+								<div class="grpContainer">							
+									<th:block th:each="g : ${grpActions}">							
+										<button th:value="${g.name}" type="button" th:text="${g.label}" style="width:80px;height:25px;" class="groupAction"></button>						
+									</th:block>
+								</div>
+						
+								<div>
+									<th:block th:each="group : ${groupsMap.get(messageType)}">
+										<h3>
+											<input type="checkbox" class="batchCheckbox" th:value="${group.groupKey}" />
+											<script th:inline="javascript">
+											//<![CDATA[
+												//used for group action
+												var groupKey = [[${group.groupKey}]];
+												
+												groups[groupKey] = {
+														timekey: [[${group.timestamp}]],
+														values: [[${group.fields}]],
+														cont:[[${group.currency}]]
+												};
+											 //]]>
+											</script>
+											<input type="hidden" name="groupKey" th:value="${group.groupKey}" />
+											<input type="hidden" name="timekey" th:value="${group.timestamp}" />
+											<a th:href="@{#__${group.groupKey}__}" style="text-decoration: none; color: #000;">
+												<th:block th:text="${group.fields}" />
+												<b>Total</b>: <th:block th:text="${group.count}"/>
+												<b>Total amount</b>: <th:block th:text="${#numbers.formatDecimal(group.totalAmount,0,'COMMA',2,'POINT')}"/>&nbsp<th:block th:text="${group.currency}"/>
+												<span class="arrow down black"></span>
+											</a>
+										</h3>
+										
+										<div th:id="${group.groupKey}" class="collapse">
+											
+											<table width="100%">
+												<tr>
+													<td>
+														<script th:inline="javascript">
+														//<![CDATA[
+															$(function(){
+																
+																var messageType = [[${messageType}]];
+																var queueName = [[${queueName}]];
+																var columns = [[${columns}]];
+																var groupKey = [[${group.groupKey}]];
+																
+																var extraData = {
+																		queueName: queueName,
+																		messageType: messageType
+																};
+																
+																var fields = [[${groupFieldNames.get(messageType)}]];
+																var values = [[${group.fields}]];
+																
+																$.each(values, function(i, item){
+																	extraData["filter_" + fields[i].kname] = item; //filter_{fieldName}={fieldValue}
+																});
+																var datatablesColumns = [];
+																
+																$.each(columns[messageType], function(i, item) {
+																	datatablesColumns.push({
+																		data: item.routingKeywordName,
+																		title: item.label,
+																		className:(item.contentType == 'number')? 'dt-right': '',
+																		render: (item.contentType == 'number')? $.fn.dataTable.render.number(',','.',2,''): '',
+																	});
+																});
+																
+																var placeholder = $('#' + groupKey + ' .messagesTablePlaceholder');
+																var tableId = "messages_" + groupKey;
+																datatablesColumns.push({
+																	isActionsColumn: true,
+																	beforeRender: function(data, type, row, meta) {																		
+																		return '<input type="checkbox" class="routeCheckbox" value="' + row.id + '"></input>';
+																	}
+																});
+																
+																$('#' + tableId).datatablesInit({
+																	actions: {
+																		get: "page-messages",
+																		view: 'payload?id={id}&type=' + messageType+"&action="+(queueName=="Edit"?"edit":"view")
+																	},
+																	columns: datatablesColumns,
+																	data: extraData
+																});
+															});
+															
+														 //]]>
+														</script>
+														<table class="fintpTable" th:id="${'messages_' + group.groupKey}" style="width:100%">
+
+														</table>
+													</td>
+													<td width="10%;">
+														<th:block th:each="s : ${selActions}">	
+														<!-- style="width:80px;height:25px;"  -->						
+															<button th:value="${s.name}" th:data-hasDetails="${s.detailsInput}" type="button" th:text="${s.label}" class="messageAction submitButton glossy-button glossy-button--purple addButton"></button>
+															<br/>
+															<div  th:if="${!s.userActionCodeEntity.isEmpty()}" th:id ="${s.name}">							
+															<select name="userActionCodeEntity" style="width:auto;">
+																<option value=""/>
+																	<option th:each="a : ${s.userActionCodeEntity}" th:value="${a.getLabel()}" 
+																			th:text="${a.getLabel()}" /> 
+																</select> 		
+																</div><br/>
+														</th:block>
+													</td>
+												</tr>
+											</table>
+											<br />
+										</div>
+									</th:block>
+								</div>
+							</div>
+					
+					</th:block>
+				</div>
+			</div>
+		</th:block>
+	</th:block>
+	</div>	
+	<script th:inline="javascript">
+	
+	$('a').on('click', function(){
+		var id = $(this).attr("href").replace("#", "");
+		var span = $(this).find('span');
+		span.toggleClass('up');
+		if (span.hasClass('up')){
+			span.removeClass('down');
+			$("#"+id).addClass("in");
+		}else{
+			span.addClass('down');
+			$("#"+id).removeClass("in");
+		}
+	});
+	
+	</script>
+	<div th:replace="fragments/fragments::footer"></div>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!-- 
+* FinTP - Financial Transactions Processing Application
+* Copyright (C) 2013 Business Information Systems (Allevo) S.R.L.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>
+* or contact Allevo at : 031281 Bucuresti, 23C Calea Vitan, Romania,
+* phone +40212554577, office@allevo.ro <mailto:office@allevo.ro>, www.allevo.ro. -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<th:block th:replace="fragments/fragments::libs"></th:block>
+
+<link th:href="@{/style/sidebar.css}" rel="stylesheet" />
+<script th:src="@{/scripts/sidebar.js}"></script>
+
+<style type="text/css">
+.border-right {border-right:3px solid #4B0082}
+td .border-right {border-right:3px solid #4B0082}
+
+</style>
+
+<script type="text/javascript" th:inline="javascript">
+	//<![CDATA[
+		
+	$(function(){
+		var table = $('<table >').addClass("fintpTable display").css("width", "100%");
+		$(".table > tbody  > tr > td:nth-child(7)").each(function() {$(this).css('border', '3px solid red')});
+
+		$('.table-wrapper').append(table);
+		
+		
+		table.datatablesInit({
+			drawCallback : function(settings) {
+				if($('.fintpTable thead tr').length < 3){
+				$('.fintpTable thead').prepend("<tr><td colspan='9' style='text-align: center; vertical-align: middle;  border: 3px solid #4B0082'>Statement</td><td colspan='10' style='text-align: center; vertical-align: middle;  border: 3px solid #4B0082'>Payment</td></tr>")
+				$(".fintpTable > tbody  > tr > td:nth-child(9)").each(function() {$(this).css('border-right', '3px solid #4B0082')});
+				$(".fintpTable > tbody  > tr:nth-child(9)").each(function() {$(this).css('border-right', '3px solid #4B0082')});
+				}
+			},
+			actions: {
+				get: 'reconciliation/page'
+			},
+			columns: [
+				{ "title": [[#{reconciliation.matchType}]], 
+					"data": "matchType",
+					"headerExtra": {
+					"data-filter": "dropdown",
+					"data-datasource": '["ALL","Match","Unmatch"]'
+					
+					} 
+				},
+				{ "title": [[#{reconciliation.stmtStatementreference}]], "data": "stmtStatementreference" },
+				{ "title": [[#{reconciliation.stmtName}]], "data": "stmtName",
+					"headerExtra": {
+						"data-filter": "dropdown",
+						"data-datasource": [[${internalEntities}]]
+						
+					} },
+				{ "title": [[#{reconciliation.stmtAmount}]],
+					"data": "stmtAmount", 
+					"name": {"filterType": "number"},
+					"className" : 'dt-body-right', 
+					"defaultContent": "",
+					"render": $.fn.dataTable.render.number( ',', '.', 2 ),
+					"headerExtra": {
+						"data-filter": "number"
+					}
+				},
+				{ "title": [[#{reconciliation.stmtCurrency}]], "data": "stmtCurrency",
+					"headerExtra": {
+						"data-filter": "dropdown",
+						"data-datasource": [[${internalAccounts}]]
+						
+					} },
+				{ "title": [[#{reconciliation.stmtValuedate}]], "data": "stmtValuedate",
+						"name": {"filterName": "dateInterval"},
+						"headerExtra" : {
+							"data-filter": "edatetime"						
+						},
+						"render": function ( data, type, row, meta ) {
+
+							     var dateTime = new Date(data);
+								 var date = dateTime.toISOString().slice(0,10).replace(/-/g,"-");
+						   		 var time = dateTime.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1");
+						   		 
+					    	return date;
+						},					
+				},
+				{ "title": [[#{reconciliation.stmtAccountnumber}]], "data": "stmtAccountnumber" },
+				{ "title": [[#{reconciliation.stmtRemittanceinfo}]], "data": "stmtRemittanceinfo"
+					},
+				{ "title": [[#{reconciliation.stmtstatementNumber}]], "data": "stmtstatementNumber",
+						"headerExtra": {
+							"data-filter": "dropdown",
+							"data-datasource": [[${stmtNumber}]]	
+						}	
+					},
+				{ "title": [[#{reconciliation.pymtMessagetype}]], "data": "pymtMessagetype" },
+				{ "title": [[#{reconciliation.pymtEndtoendid}]], "data": "pymtEndtoendid" },
+				{ "title": [[#{reconciliation.pymtDbtcustomername}]], "data": "pymtDbtcustomername" },
+				{ "title": [[#{reconciliation.pymtAmount}]],
+					"data": "pymtAmount", 
+					"name": {"filterType": "number"},
+					"className" : 'dt-body-right', 
+					"defaultContent": "",
+					"render": $.fn.dataTable.render.number( ',', '.', 2 ),
+					"headerExtra": {
+						"data-filter": "number"
+					}
+				},
+				{ "title": [[#{reconciliation.pymtCurrency}]], "data": "pymtCurrency" },
+				{ "title": [[#{reconciliation.pymtValuedate}]], "data": "pymtValuedate" },
+				{ "title": [[#{reconciliation.pymtDbtaccount}]], "data": "pymtDbtaccount" },
+				{ "title": [[#{reconciliation.pymtRemittanceinfo}]], "data": "pymtRemittanceinfo" },
+				{ "title": [[#{reconciliation.pymtCdtcustomername}]], "data": "pymtCdtcustomername" },
+				{ "title": [[#{reconciliation.pymtCdtaccount}]], "data": "pymtCdtaccount" }
+				
+			]
+		});
+		
+		
+	});
+	
+	//]]>
+</script>
+
+<meta charset="ISO-8859-1" />
+<title><th:block th:text="${title}" /></title>
+</head>
+	<body>
+		<header th:replace="fragments/fragments::header"></header>
+
+		<div class="content">
+		<!-- <h2>
+			<th:block th:text="${param.businessArea[0]}" />
+		</h2> -->
+			<input id="apiUri" type="hidden" value="${apiUri}" /> 
+			
+		<div class="table-wrapper">
+			 	
+		</div>
+		
+		<footer th:replace="fragments/fragments::footer" id="footer"></footer>	
+	</body>
+</html>

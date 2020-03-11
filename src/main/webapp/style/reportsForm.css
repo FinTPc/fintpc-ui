@@ -1,0 +1,46 @@
+td.title { vertical-align:text-top; border: 0px;}
+select {width: 100%}
+select[class] {width: 38%}
+input[type=text] {width: 80%}
+span.disabled { color:gray;}
+span.hidden {display:none;}
+table.left{float: left; padding: 30px; height:100%}
+/* input[type="submit"], [type="reset"] { */
+/* 	float:none; */
+/*     width: 225px; */
+/*     height: 35px; */
+/*     margin-top: 7px; */
+/*     font-size: 18px; */
+/*     font-weight: bold; */
+/*     outline: none;  */
+/*     background:#5f6975; */
+/*     color:#fff; */
+/*     border: 1px solid rgba(0, 0, 0, .49); */
+    
+/*     padding: 2px; */
+/*     margin:2px; */
+    
+/* } */
+/* input[type="button"] { */
+/* 	float:none; */
+/*     width: 185px; */
+/*     height: 35px; */
+/*     margin-top: 7px; */
+/*     font-size: 18px; */
+/*     font-weight: bold; */
+/*     outline: none;  */
+/*     background:#5f6975; */
+/*     color:#fff; */
+/*     border: 1px solid rgba(0, 0, 0, .49); */
+    
+/*     padding: 2px; */
+/*     margin:2px; */
+    
+/* } */
+a:hover
+{
+	text-decoration: none;
+	color: #fff;
+	
+}
+		

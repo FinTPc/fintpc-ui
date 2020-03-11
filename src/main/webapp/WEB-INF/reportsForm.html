@@ -1,0 +1,113 @@
+<!-- 
+* FinTP - Financial Transactions Processing Application
+* Copyright (C) 2013 Business Information Systems (Allevo) S.R.L.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>
+* or contact Allevo at : 031281 Bucuresti, 23C Calea Vitan, Romania,
+* phone +40212554577, office@allevo.ro <mailto:office@allevo.ro>, www.allevo.ro. -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<th:block th:replace="fragments/fragments::libs"></th:block>
+
+<link th:href="@{/style/reportsForm.css}" rel="stylesheet"/>
+<script th:src="@{/scripts/reportsForm.js}"></script>
+
+
+<meta charset="ISO-8859-1" />
+<title><th:block th:text="${title}" /></title>
+</head>
+<body >
+
+	<div th:replace="fragments/fragments::header"></div>
+
+	<div class="content">
+	<h2>
+		<th:block th:text="#{reports.title}" />
+	</h2>
+	
+	<div style="padding:45px 15px 15px;">
+	<form id="messagesForm" action="general/search" class="form-horizontal" method="get" target="_blank">
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group">
+					<label class="col-md-4 control-label"><th:block th:text="#{reports.businessArea}"/></label>
+					<div class="col-md-8">
+						<th:block th:each="ba:${businessareas}">
+							<div class="radio">
+								<label>
+									<input type="radio" th:name="businessArea"	th:value="${ba}" th:id="${ba}">
+										<th:block th:text="${ba}"></th:block>
+									</input>
+								</label>
+							</div>
+						</th:block>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group">
+				<div id = "transactionType">
+					<label class="col-md-4 control-label"><th:block th:text="#{reports.headerMsgtype}"/></label>
+					<div class="col-md-8">
+						<select id="messageType" name="filter_messagetype_exact" class="form-control">
+							<option selected="selected"></option>
+						</select>
+					</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row filters-row">
+			<div class="col-md-6">
+			<!-- inserted from js -->
+			</div>
+			<div class="col-md-6">
+			<!-- inserted from js -->
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group text-center">
+				<input type="submit"  id="search" class="submitButton glossy-button glossy-button--purple" th:value="#{reportsForm.search}" style="width:inherit"/>
+				<input type="reset" id="rst" class="submitButton glossy-button glossy-button--purple"  th:value="#{action.cancel}"  style="width:inherit" />
+			</div>
+		</div>
+		
+		<input type="hidden" name="reportHeader" id="reportHeader" />
+	
+		<div id="toggle" class="results-row" style="display:none;">
+			<table style="text-align:center;" class="table">
+				<tr>
+					<!-- inserted from js -->
+				</tr>
+				<tr>
+					<!-- inserted from js -->
+				</tr>
+			</table>
+			<input type="button" class="submitButton glossy-button glossy-button--purple"  th:value="#{reportsForm.done}"  id="closeHeadersButton"/>
+		</div>
+	</form>
+	<div id="tableHeaders">
+		<input type="button" class="submitButton glossy-button glossy-button--purple" th:value="#{reportsForm.tableHeaders}" style="width:210px" id="viewHeadersButton"/>
+		<br/>
+	</div>
+	
+	</div>
+	</div>
+	<div th:replace="fragments/fragments::footer"></div>
+</body>
+</html>

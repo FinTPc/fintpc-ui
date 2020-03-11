@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<th:block th:fragment="menu">
+	<li class="main-menu">
+		<a th:href="@{/tests}">
+			<th:block th:text="#{header.menuAT}" />
+		</a>
+	</li>
+</th:block>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!-- 
+* FinTP - Financial Transactions Processing Application
+* Copyright (C) 2013 Business Information Systems (Allevo) S.R.L.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>
+* or contact Allevo at : 031281 Bucuresti, 23C Calea Vitan, Romania,
+* phone +40212554577, office@allevo.ro <mailto:office@allevo.ro>, www.allevo.ro. -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<th:block th:replace="fragments/fragments::libs"></th:block>
+
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	
+	$(function(){
+		var fp ='';
+		$.each([[${param.fp}]], function(i, value){
+			fp += 'fp='+value + '&';
+		});
+		
+		var table = $('<table>').addClass("fintpTable display").css("width", "100%");
+		$('.content').append(table);
+		
+		table.datatablesInit({
+			actions: {
+				add: {
+					url: 'schemas/add',
+					label: [[#{routingschemas.newSchema}]]
+				},
+				get: 'schemas/page',
+				edit: 'schemas/{rowid}/edit',
+				open: 'routing-rules/{rowid}?'+fp,
+				delete: {
+					url: "schemas/{rowid}/delete",
+					confirm: $$messages["routingschemas.confirm.delete"]
+				}
+			},
+			columns: [ 
+				{ "title": [[#{routingschemas.name}]], "data": "name"},
+				{ "title": [[#{routingschemas.description}]], "data": "description"},
+				{ "title": [[#{routingschemas.sessionCode}]], "data": "sessionCode"},
+				{
+					"title": [[#{routingschemas.startLimit}]],
+					"data": "startLimitEntity.name",
+					"headerExtra": {
+						"data-filter": "dropdown",
+						"data-datasource": [[${limits}]]
+					}
+				},
+				{ 
+					"title": [[#{routingschemas.stopLimit}]],
+					"data": "stopLimitEntity.name",
+					"headerExtra": {
+						"data-filter": "dropdown",
+						"data-datasource": [[${limits}]]
+					}
+				}
+			]
+		});
+	});
+	/*]]>*/
+</script>
+
+<meta charset="ISO-8859-1" />
+<title><th:block th:text="${title}" /></title>
+</head>
+<body >
+
+	<div th:replace="fragments/fragments::header"></div>
+
+	<div class="content">
+		<input id="apiUri" type="hidden" value="${apiUri}" />
+		
+	</div>
+	<div th:replace="fragments/fragments::footer"></div>
+</body>
+</html>

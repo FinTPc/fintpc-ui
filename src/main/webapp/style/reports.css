@@ -1,0 +1,37 @@
+.reportsTable {
+	table-layout: auto;
+	width: 100%;
+	overflow: scroll;
+	background-color:  #efefef;
+}
+
+
+.reportsTable td{
+	overflow: hidden;
+	border: 1px solid #efefef;
+/* 	text-align: center; */
+}
+
+.reportsTable th{
+	overflow: hidden;
+	border: 0;
+}
+
+
+.reportsTable tr:nth-child(odd){ 
+	background-color:white; 
+	border: 0;}
+
+
+.reportsTable th {
+	background: -o-linear-gradient(bottom, #757575 5%, #b2b2b2 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #666666
+		), color-stop(1, #b2b2b2));
+	background: -moz-linear-gradient(center top, #757575 5%, #b2b2b2 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#757575",
+		endColorstr="#b2b2b2");
+	background: -o-linear-gradient(top, #757575, b2b2b2);
+	background-color: #757575;
+	text-align: center;
+	font-weight: bold;
+}

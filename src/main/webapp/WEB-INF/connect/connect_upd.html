@@ -1,0 +1,105 @@
+<!-- 
+* FinTP - Financial Transactions Processing Application
+* Copyright (C) 2013 Business Information Systems (Allevo) S.R.L.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>
+* or contact Allevo at : 031281 Bucuresti, 23C Calea Vitan, Romania,
+* phone +40212554577, office@allevo.ro <mailto:office@allevo.ro>, www.allevo.ro. -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1" />
+<meta name="_csrf" id="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" id="_csrf_header"
+	th:content="${_csrf.headerName}" />
+<title><th:block th:text="${title}" /></title>
+<link rel="stylesheet"
+	href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" th:href="@{/style/connect/connect.css}">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script th:src="@{/libs/jquery-ui-1.12.1/jquery-ui.js}"></script>
+<script th:src="@{/scripts/connect/connect_upd.js}"></script>
+<script type="text/javascript">
+//<![CDATA[
+
+var $$messages = {"token.confirm.delete": "[[#{token.confirm.delete}]]",
+			"consentEntity.confirm.delete": "[[#{consentEntity.confirm.delete}]]",
+			}
+//]]>
+</script>
+</head>
+<body>
+	<div th:object="${connect}" style="width: 100%;">
+		<input type="hidden" id="id" th:field="*{id}" />
+		<input type="hidden" th:field="*{redirectUri}" id="redirectUri" />
+		<input type="hidden" th:value="${redirect}" id="redirect" />	
+		<div class="consent_left">
+			<label style="margin-right: 10px" th:text="#{consentEntity.id}"></label>
+		</div>
+		<div>
+			<input type="text" th:field="*{consentEntity.consentId}" 
+			id="consentId"/>
+		</div>
+		<div class="consent_left">
+			<label style="margin-right: 10px" th:text="#{connect.bank_name}"></label>
+		</div>
+		<div>
+			<input type="text" th:field="*{bic}" id="bic" />
+		</div>
+		<div class="consent_left">
+			<label style="margin-right: 10px"
+				th:text="#{consentEntity.valid_until}"></label>
+		</div>
+		<div>
+			<input type="text" th:field="*{consentEntity.validUntil}"
+				id="consentExpir" />
+		</div>
+
+		<div class="consent_left">
+			<button style="margin-right: 10px"
+				class="btn create submitButton glossy-button glossy-button--purple"
+				id="UpdateConsent">Update</button>
+		</div>
+		<div>
+			<button id="DeleteConsent"
+				class="btn cancel submitButton glossy-button glossy-button--purple">Delete</button>
+		</div>
+		<div class="consent_left">
+			<label style="margin-right: 10px" th:text="#{connect.token}"></label>
+		</div>
+		<div>
+			<textarea rows="10" cols="50" th:text="*{token}" id="token">
+			sdafasdf
+			</textarea>
+		</div>
+		<div class="consent_left">
+			<label style="margin-right: 10px"
+				th:text="#{connect.expiration_date}"></label>
+		</div>
+		<div>
+			<input type="text" th:field="*{expirationDate}" id="tokenExpir" />
+		</div>
+		<div class="consent_left">
+			<button id="UpdateToken"
+				class="btn cancel submitButton glossy-button glossy-button--purple">Update</button>
+		</div>
+		<div>
+			<button id="DeleteToken"
+				class="btn cancel submitButton glossy-button glossy-button--purple">Delete</button>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+
+FinTP_Auth.url : http://localhost:8087
+ 
+
+
+spring.main.allow-bean-definition-overriding: true
+
+server:
+  servlet:
+   session:
+      cookie:
+        name: UI2SESSION
+security:
+  basic:
+    enabled: false
+  oauth2:
+    client:
+      clientId: SampleClientId
+      clientSecret: secret
+      accessTokenUri: ${FinTP_Auth.url}/oauth/token
+      userAuthorizationUri: ${FinTP_Auth.url}/oauth/authorize
+      #preEstablishedRedirectUri: http://localhost:8085/fintp_ui/login
+      preEstablishedRedirectUri: http://localhost:8085/fintp_ui
+      redirect_uri: http://localhost:8085/fintp_ui
+      pre-established-redirect-uri: http://localhost:8085/fintp_ui
+    resource:
+      userInfoUri: ${FinTP_Auth.url}/user/me
+
+spring:
+  thymeleaf:
+    cache: false        
+    
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG

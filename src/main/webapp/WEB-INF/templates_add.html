@@ -1,0 +1,114 @@
+<!-- 
+* FinTP - Financial Transactions Processing Application
+* Copyright (C) 2013 Business Information Systems (Allevo) S.R.L.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>
+* or contact Allevo at : 031281 Bucuresti, 23C Calea Vitan, Romania,
+* phone +40212554577, office@allevo.ro <mailto:office@allevo.ro>, www.allevo.ro. -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:replace="fragments/fragments::libs"></th:block>
+<script th:src="@{/libs/multiselect/multiselect.min.js}"></script>
+
+<meta charset="ISO-8859-1" />
+<title><th:block th:text="${title}" /></title>
+<script th:inline="javascript">
+	/*<![CDATA[*/
+		var template = /*[[${template}]]*/ '';
+		var $$dropDowns = /*[[${dropDowns}]]*/ '';
+		var xyz = /*[[${templatesConfig}]]*/ '';
+		var xPaths = /*[[${xPaths}]]*/ '';
+		var getTemplates = "/fields";
+	
+	/*]]>*/
+</script>
+<script th:src="@{/scripts/template_add.js}"></script>
+</head>
+<body ><!-- class="modal" decomenteaza class modal la sfarsit-->
+
+	<input id="apiUri" type="hidden" value="${apiUri}" />
+	<form method="post" th:action="${formAction}" style="margin: 2% 18%;" th:object="${template}">
+		<input id="" th:field="*{id}" type="hidden" />
+		<div>
+			<div style="margin-bottom: 5px;display:flex">
+				<div style="float: left;width: 50%;"><th:block th:text="#{template.name}" />:</div>
+				<div><input id="templateName" type="text" th:field="*{name}" minlength="1" maxlength="35" pattern=".{1,35}" th:required="required" class="form-control" /></div>
+			</div>				
+			<div style='margin-bottom: 5px;'>
+				<div style="float: left;width: 50%;"><th:block th:text="#{template.type}" />:</div>
+				<div>
+					<input id="templateType0" name="templateType" type="radio"  th:checked="*{type}==0"  value="0" th:field="*{type}"/>Simple
+					<input id="templateType1" name="templateType" type="radio"  th:checked="*{type}==1" value="1"  th:field="*{type}"/>Multiple
+				</div>
+			</div>
+			<div style='margin-bottom: 5px;'>
+				<div style="float: left;width: 50%;"><th:block th:text="#{template.config.list}" /></div>
+				<div>
+					<select id="messageType" class="form-control" required="required">
+						<option id=0></option>
+						<th:block th:if="*{txtemplatesconfig}"> 
+					  		<option th:each="templateConfig:${templatesConfig}" th:selected="${templateConfig.id}==*{txtemplatesconfig.id}" th:value="${templateConfig.id}" th:text="${templateConfig.messagetype}"></option>
+					  	</th:block>
+					  	<th:block th:unless="*{txtemplatesconfig}">
+					  		<option th:each="templateConfig:${templatesConfig}"  th:value="${templateConfig.id}" th:text="${templateConfig.messagetype}"></option>
+					  	</th:block>
+					</select>
+				</div>
+			</div>
+		</div>
+		<br/>
+		<div class="row d-none" id="typeMultiple" >
+		  <div class="col-xs-5">	  
+			  <select name="from" id="multiselect" class="form-control" size="8" multiple="multiple">
+			  		<option th:each="simpleTemplate:${simpleTemplates}" th:value="${simpleTemplate.id}" th:text="${simpleTemplate.name}"></option>
+			  </select>
+		  </div>
+		  <div class="col-xs-2">
+			  <button type="button" id="multiselect_rightAll" class="btn btn-block"><i class="glyphicon glyphicon-forward"></i></button>
+			  <button type="button" id="multiselect_rightSelected" class="btn btn-block"><i class="glyphicon glyphicon-chevron-right"></i></button>
+			  <button type="button" id="multiselect_leftSelected" class="btn btn-block"><i class="glyphicon glyphicon-chevron-left"></i></button>
+			  <button type="button" id="multiselect_leftAll" class="btn btn-block"><i class="glyphicon glyphicon-backward"></i></button>
+		  </div>
+		  <div class="col-xs-5">
+			  <select name="to" id="multiselect_to" class="form-control" size="8" multiple="multiple">
+			  	<option th:each="group:*{txtemplatesgroups}" th:value="${group.groupid}" th:text="${group.name}" th:id="${group.id}"></option>
+			  </select>
+		  </div>
+		</div>
+		<div id="xpathsArea" style="overflow: auto;height: min-content;height: -webkit-min-content;height: -moz-min-content;">
+		
+		</div>
+		
+		<table class="centeredTable" style="width: auto;">
+			<tbody>
+				<tr>
+<!-- 					<td><th:block th:text="#{template.type}" />:</td> -->
+<!-- 					<td><input id="templateType" type="text" th:field="*{type}" maxlength="35" th:required="required" /></td> -->
+				</tr>
+			</tbody>
+		</table>
+		
+		<script>
+			if ($('form').attr('action') == "templates/update"){
+				$('form input[name="bic"]').prop('readonly', true);
+			}
+			
+		</script>
+	</form>
+
+</body>
+</html>

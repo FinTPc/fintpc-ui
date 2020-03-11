@@ -1,0 +1,73 @@
+<!-- 
+* FinTP - Financial Transactions Processing Application
+* Copyright (C) 2013 Business Information Systems (Allevo) S.R.L.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>
+* or contact Allevo at : 031281 Bucuresti, 23C Calea Vitan, Romania,
+* phone +40212554577, office@allevo.ro <mailto:office@allevo.ro>, www.allevo.ro. -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<meta charset="ISO-8859-1" />
+<title><th:block th:text="${title}" /></title>
+</head>
+<body class="modal">
+	<input id="apiUri" type="hidden" value="${apiUri}" />
+	<form method="post" th:action="${formAction}" style="margin: 2% 10%;"
+		th:object="${internalEntity}">
+		<input name="id" type="hidden" th:value="${internalEntity.id}" />
+		<table class="centeredTable" style="width: auto;">
+			<tbody>
+				<tr>
+					<td><th:block th:text="#{internalEntity.name}" />:</td>
+					<td><input id="internalEntityName" name = "name" type="text" th:field="*{name}"
+						maxlength="35" th:required="required" /></td>
+				</tr>
+				<tr>
+					<td><th:block th:text="#{internalEntity.address}" />:</td>
+					<td><input id="internalEntityAddress" type="text" th:field="*{address}"
+						maxlength="70" /></td>
+				</tr>
+				<tr>
+					<td><th:block th:text="#{internalEntity.city}" />:</td>
+					<td><input id="internalEntityCity" type="text" th:field="*{city}"
+						maxlength="35" /></td>
+				</tr>
+				<tr>
+					<td><th:block th:text="#{internalEntity.country}" />:</td>
+					<td><select id="internalEntityCountry" name="country" th:field="*{country}"
+						style="text-align: left;" th:required="required">
+							<option value=""></option>
+							<option th:each="country : ${countries}"
+							th:value="${country.key}" th:text="${country.value}" />
+					</select></td>
+				</tr>
+				<tr>
+					<td><th:block th:text="#{internalEntity.fiscalCode}" />:</td>
+					<td><input id="internalEntityFiscalCode" type="text" th:field="*{fiscalCode}"
+						maxlength="10" th:required="required" /></td>
+				</tr>
+			</tbody>
+		</table>
+		<script>
+			if ($('form').attr('action') == "internal-entities/update"){
+				$('form input[id="internalEntityName"]').prop('readonly', true);
+			}			
+		</script>
+	</form>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!-- 
+* FinTP - Financial Transactions Processing Application
+* Copyright (C) 2013 Business Information Systems (Allevo) S.R.L.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>
+* or contact Allevo at : 031281 Bucuresti, 23C Calea Vitan, Romania,
+* phone +40212554577, office@allevo.ro <mailto:office@allevo.ro>, www.allevo.ro. -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta name="_csrf" id="_csrf" th:content="${_csrf.token}"/>
+<meta name="_csrf_header" id="_csrf_header" th:content="${_csrf.headerName}"/>
+<th:block th:replace="fragments/fragments::libs"></th:block>
+
+<link href="./style/app.css" rel="stylesheet" type="text/css" />
+<link href="./style/jqueryDataTable/jquery.dataTables.min.css"
+	rel="stylesheet" type="text/css" />
+<link href="./style/jqueryDataTable/fixedHeader.dataTables.min.css"
+	rel="stylesheet" type="text/css" />
+<link href="./style/content.css" rel="stylesheet" type="text/css" />
+<link href="./style/fintpTable.css" rel="stylesheet" />
+
+<script src="./scripts/jquery.dataTables.min.js"></script>
+<script src="./scripts/jqueryDataTable/dataTables.fixedHeader.min.js"></script>
+
+<script src="./scripts/renderControl.js"></script>
+
+<script type="text/javascript" th:inline="javascript">
+//<![CDATA[
+		
+	$(function(){
+		var table = $('<table>').addClass("fintpTable display").css("width", "100%");
+		$('#queuesTableFinale').append(table);
+		
+		var href;
+		var attr;
+		var dataTableParams = {
+				actions: {
+					get: ''
+				},
+				columns: [
+					{ 
+						"title": [[#{queues.label}]],
+						"data": "label",
+						"render": function ( data, type, row, meta ) {
+							href = 'queues/'+ row.name; 
+							attr=row[2];						
+							return "<input id ='id' type='hidden' value='" + attr + "'/><a href='"+ href+"'>"+data+"</a>";
+						}
+					},
+					{ 
+						"title": [[#{queues.description}]],
+						"data": "description",
+						"width": "50%",
+						"render": function ( data, type, row, meta ) {							
+							return "<a href='"+ href+"'>"+data+"</a>";
+						}
+					},
+					{ 
+						"title": [[#{queues.noMessages}]],
+						"data" : null,
+						"className" : 'dt-body-center',
+						"orderable": false,
+						"render": function ( data, type, row, meta ) {	
+							return "<span data-id='" +data.id+ "'></span>" +
+									"<img width='16px' height='16px' src='./style/images/loading_no_messages.gif' alt='Loading...'></img>";
+						},
+						"headerExtra": {
+							"data-filter": "noFilter"
+						}
+					}
+				],
+				drawCallback: function() {
+					ajaxCountMessagesInQueues();
+				}
+			}
+			
+		dataTableParams.actions.get = "queues/page-finale";
+		table.datatablesInit(dataTableParams);
+		
+		table = $('<table>').addClass("fintpTable display").css("width", "100%");
+		$('#queuesTableInterm').append(table);
+		
+		dataTableParams.actions.get = "queues/page-interm";
+		table.datatablesInit(dataTableParams);
+	});
+	
+//]]>
+</script>
+
+<script src="./scripts/queuesDynamic.js"></script>
+
+<meta charset="ISO-8859-1" />
+<title><th:block th:text="${title}" /></title>
+</head>
+<body >
+
+	<div th:replace="fragments/fragments::header"></div>
+
+	<div class="content">
+		<input id="apiUri" type="hidden" value="${apiUri}" />
+		<div class="row">
+			<div class="col-md-12">
+				<div class="row">
+					<div id="queuesTableFinale" class="col-md-6">
+					
+					</div>
+					<div id="queuesTableInterm" class="col-md-6">
+					
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:replace="fragments/fragments::footer"></div>
+</body>
+</html>

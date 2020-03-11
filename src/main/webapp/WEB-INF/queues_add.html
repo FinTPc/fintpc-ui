@@ -1,0 +1,131 @@
+<!-- 
+* FinTP - Financial Transactions Processing Application
+* Copyright (C) 2013 Business Information Systems (Allevo) S.R.L.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>
+* or contact Allevo at : 031281 Bucuresti, 23C Calea Vitan, Romania,
+* phone +40212554577, office@allevo.ro <mailto:office@allevo.ro>, www.allevo.ro. -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<meta charset="ISO-8859-1" />
+<title><th:block th:text="${title}" /></title>
+</head>
+<body class="modal">
+		<input id="apiUri" type="hidden" value="${apiUri}" />
+		<form method="post" th:action="${formAction}" style="margin: 2% 18%;" th:object="${queue}">
+			<table style="width: auto;">
+				<tbody>
+					<tr>
+						<td><th:block th:text="#{queue.queueName}" />:</td>
+						<td>
+						<input id = "name" type="text" th:field="*{name}" th:required="required" style="width: 157px; /* height: 14px; */" maxlength="50"/>
+						</td>
+					</tr>
+					<tr>
+						<td><th:block th:text="#{queue.queueLabel}" />:</td>
+						<td>
+							<input id = "label" type="text" th:field="*{label}" th:required="required" style="width: 157px; /* height: 14px; */" maxlength="50"/>
+						</td>
+					</tr>
+					<tr>
+						<td style="vertical-align: top;"><th:block th:text="#{queue.description}" />:</td>
+						<td><textarea id="address" type="text" th:field="*{description}" maxlength="100"></textarea></td>
+					</tr>
+					<tr>
+						<td><th:block th:text="#{queue.holdStatus}" />:</td>
+						<td><select th:field="*{holdStatus}" th:required="required">
+							<option value="" />
+							<option th:value="0" th:text="Inactive"></option>
+							<option th:value="1" th:text="Active"></option>
+						</select></td>
+					</tr>
+					<tr>
+						<td><th:block th:text="#{queue.type}" />:</td>
+						<td id = "queueTypeId">
+						<select name = "queueTypeId"  th:field="*{queueTypeId}" th:required="required">
+							<option value="" />
+							<option th:each="t : ${types}" th:value="${t.getFirst()}" th:text="${t.getSecond()}" />
+						</select>
+						</td>
+					</tr>
+					<tr id ="exitPoint" >
+						<td><th:block th:text="#{queues.exitPoint}"/>:</td>						
+						<td><select th:field="*{exitPoint}">
+								<option value="" />
+								<option th:each="c : ${connectors}" th:text="${c.value}" th:value="${c.key}" />
+						</select></td>
+					</tr>
+					<tr id = "maxTrxOnBatch" >
+						<td><th:block th:text="#{queue.maxTrxOnBatch}" />:</td>	
+						<td><input type="number" th:field="*{maxTrxOnBatch}" min="0" max="1500"/></td>				
+						
+					</tr>
+					
+
+				</tbody>
+			</table>
+		<script>
+			if ($('form').attr('action') == "queues/update"){
+				$('form input[name="name"]').prop('readonly', true);
+				//$('form input[name="name"]').prop( 'border','0px');
+				
+				var optionVal = $('#queueTypeId').find(":selected").val();
+				var optionText = $('#queueTypeId').find(":selected").text();
+				var input = $('<input type="hidden" id="queueTypeId" name="queueTypeId" value="'+optionVal+'">'+optionText+'</input>');
+			
+				$("#queueTypeId").empty();
+				$("#queueTypeId").append(input);
+				 if(optionVal == "6"){
+		    		 $('#exitPoint').show();
+					 $('#maxTrxOnBatch').show();
+				}
+				 else
+					 {
+					 $('#exitPoint').hide();
+					 $('#maxTrxOnBatch').hide();
+					 }
+			}
+			
+			if ($('form').attr('action') == "queues/insert"){
+				$("input#name").on('keyup change',function() {
+			    	var name = $('#name').val();
+			    	 $('input[name="label"]').val(name);
+			
+				});
+				
+				
+				 $('#exitPoint').hide();
+				 $('#maxTrxOnBatch').hide();
+			}
+			$("select#queueTypeId").on('keyup change',function() {
+		    	var queueTypeId = $('#queueTypeId').find(":selected").text();
+		    	 if(queueTypeId == "Authorization" || queueTypeId =="6") {
+		    		 $('#exitPoint').show();
+					 $('#maxTrxOnBatch').show();
+				} else {
+				 $('#exitPoint').hide();
+				 $('#maxTrxOnBatch').hide();
+				}
+		
+			});
+			
+		</script>
+		</form>	
+		
+</body>
+</html>

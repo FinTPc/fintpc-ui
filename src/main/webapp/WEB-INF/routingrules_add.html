@@ -1,0 +1,146 @@
+<!-- 
+* FinTP - Financial Transactions Processing Application
+* Copyright (C) 2013 Business Information Systems (Allevo) S.R.L.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>
+* or contact Allevo at : 031281 Bucuresti, 23C Calea Vitan, Romania,
+* phone +40212554577, office@allevo.ro <mailto:office@allevo.ro>, www.allevo.ro. -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<script th:inline="javascript">
+	var actions = JSON.parse(/*[[${actionsJSON}]]*/);
+	var defaultAction = /*[[${action}]]*/;
+	var defaultActionValue = /*[[${actionValue}]]*/;
+	
+	$(function() { //document ready
+		
+		
+		$("#actionSelect").change(function(){
+			var option = $(this).find("option:selected").val();	
+			var action;
+			
+			
+			$.each(actions,function(key,value){
+				if(value.label == option)
+					action = value;
+			});
+			
+			//console.log(actions);
+			var control = renderControl(action);
+			$("#actionValueContainer").children().remove();
+			
+			if (control != null) {
+				control.attr({
+					id: "actionValue"
+					});
+				
+				$("#actionValueContainer").append(control);
+			}
+			
+		});
+		
+		//set default values on edit
+		$("#actionSelect").val(defaultAction);
+		$("#actionSelect").change(); //render control
+		$("#actionValue").val(defaultActionValue);
+		var path = window.location.pathname.split('/routing-rules/');
+		if (path.length>1){
+			var action = $('form').attr('action').split('/');
+			$('form').attr('action', action[1]);
+		}
+	});
+</script>
+
+
+<meta charset="ISO-8859-1" />
+<title><th:block th:text="${title}" /></title>
+</head>
+<body >
+
+	<form method="post" th:action="${formAction}" style="margin: 2% 10%;"
+		th:object="${rule}">
+		<input name="id" type="hidden" th:value="${rule.id}" />
+		<table class="centeredTable" style="width: auto;">
+			<tbody>
+				<tr>
+					<td><th:block th:text="#{routingrules.queueName}" />:</td>
+					<td><select th:field="*{queueId}" >
+					<option value=""></option>
+							<option th:each="q:${queues}" th:text="${q.value}" th:value="${q.key}"></option>
+					</select></td>
+				</tr>
+				<tr>
+					<td><th:block th:text="#{routingrules.routingSchema}" />:</td>
+					<td><select th:field="*{routingSchemaId}">
+					<option value=""></option>
+							<option th:each="s:${schemas}" th:text="${s.value}" th:value="${s.key}"></option>
+					</select></td>
+				</tr>
+				<tr>
+					<td style="vertical-align: top;"><th:block th:text="#{routingrules.desctiption}" />:</td>
+					<td><textarea th:field="*{description}"/></td>
+				</tr>
+				<tr>
+					<td style="vertical-align: top;"><th:block th:text="#{routingrules.msgFormCondition}" />:</td>
+					<td><textarea th:field="*{messageCondition}"/></td>
+				</tr>
+				<tr>
+					<td style="vertical-align: top;"><th:block th:text="#{routingrules.fctResultCondition}" />:</td>
+					<td><textarea th:field="*{functionCondition}"/></td>
+				</tr>
+				<tr>
+					<td style="vertical-align: top;"><th:block th:text="#{routingrules.metadatacondition}" />:</td>
+					<td><textarea th:field="*{metadataCondition}"/></td>
+				</tr>
+				<tr>
+					<td><th:block th:text="#{routingrules.actionOnSoure}" />:</td>
+					<td>
+						<select id="actionSelect">
+							<option value=""></option>
+							<th:block th:each="currAction : ${actions}">
+								<option th:value='${currAction.get("label").asText()}' 
+									th:text='${currAction.get("label").asText()}'></option>
+							</th:block>
+						</select>
+						
+						<div id = "actionValueContainer">
+						</div>
+						
+						<input id="action" type="hidden" th:field="*{action}"/>
+					</td>
+				</tr>
+				<tr>
+					<td><th:block th:text="#{routingrules.sequence}" />:</td>
+					<td><input type="number" min="1" th:field="*{sequence}" /></td>
+				</tr>
+				<tr>
+					<td><th:block th:text="#{routingrules.type}" />:</td>
+					<td><select th:field="*{ruleType}">
+							<th:block th:each="rule: ${types}">
+								<option th:value="${rule.key}"
+									th:text="${rule.value}"></option>
+							</th:block>
+					</select></td>
+				</tr>
+
+			</tbody>
+		</table>		
+	</form>
+	
+</body>
+</html>

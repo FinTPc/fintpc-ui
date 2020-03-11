@@ -1,0 +1,165 @@
+<!-- 
+* FinTP - Financial Transactions Processing Application
+* Copyright (C) 2013 Business Information Systems (Allevo) S.R.L.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>
+* or contact Allevo at : 031281 Bucuresti, 23C Calea Vitan, Romania,
+* phone +40212554577, office@allevo.ro <mailto:office@allevo.ro>, www.allevo.ro. -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<th:block th:replace="fragments/fragments::libs"></th:block>
+
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	var importingUsers = /*[[#{users.importing}]]*/'Importing';
+	var removingUsers = /*[[#{users.removing}]]*/'Removing';
+	/*]]>*/
+</script>
+
+<script src="scripts/users.js"></script>
+
+
+
+<meta charset="ISO-8859-1" />
+<title><th:block th:text="${title}" /></title>
+</head>
+<body >
+	<div th:replace="fragments/fragments::header"></div>
+
+	<div class="content" >
+<!-- 		<button id="addUser" class="submitButton" th:text="#{users.newUser}" ></button> -->
+		<button id="addRole" class="submitButton" th:text="#{users.newRole}" style="margin: 2%" ></button>
+		<button id="sync" class="submitButton" th:text="Sync"></button>
+		
+		<div class="twoColumns">
+			<div class="column2" style="height:600px; overflow:auto;">
+				<th:block th:switch="${#lists.isEmpty(users)}">
+					<th:block th:case="true">
+						<th:block th:text="#{users.empty}" />
+					</th:block>
+					<th:block th:case="false">
+						<table id="userTable" class="fintpTable" style="width:95%;">
+							<thead>
+								
+								<th><th:block th:text="#{users.username}" /></th>
+								<th><th:block th:text="#{users.email}" /></th>
+								<th class="actions"><th:block th:text="#{action.actions}" /></th>
+							</thead>
+							<tbody>
+								<th:block th:each="user : ${users}">
+									<tr>
+										
+										<td><th:block th:text="${user.username}" /></td>
+										<td><th:block th:text="${user.email}" /></td>
+										<td class="actions">
+											<button class="btn btn-xs edit editUser viewMode" th:attr="data-username=${user.username}" title="Edit"></button>
+											<button class="btn btn-xs editUserRole viewMode" th:attr="data-username=${user.username}" title="Edit Roles"></button>
+											<button class="btn btn-xs saveUserRole invisible editMode" th:attr="data-username=${user.username}" title="Save"></button>
+											<button class="btn btn-xs cancelUserRole invisible editMode" title="Cancel"></button>
+											<button class="btn btn-xs delete deleteUser viewMode" th:attr="data-userid=${user.id}, data-username=${user.username}" title="Delete"></button>
+										</td>
+									</tr>
+								</th:block>
+							</tbody>
+						</table>
+					</th:block>
+				</th:block>
+			</div>
+			<div class="column2">
+				<table id="rolesTable" class="fintpTable" style="width:95%;">
+					<thead>
+						<th></th>
+						<th colspan="4"><th:block th:text="#{role.name}" /></th>
+						<th><span title="View">V</span></th>
+						<th><span title="Modify">M</span></th>
+					</thead>
+					<tbody>
+						<th:block th:each="role : ${applicationRoles}">
+							<tr class="applicationRole">
+								<td></td>
+								<td colspan="4"><th:block th:text="${role.name}" /></td>
+								<td class="text-center">
+									<th:block th:if="${#lists.contains(role.actions, 'view')}">
+										<input type="checkbox" class="checkRole" disabled="disabled"
+											value="view" th:attr="data-roleid=${role.id}" />
+									</th:block>
+								</td>
+								<td class="text-center">
+									<th:block th:if="${#lists.contains(role.actions, 'modify')}">
+										<input type="checkbox" class="checkRole checkRoleView" disabled="disabled" 
+											value="modify" th:attr="data-roleid=${role.id}" />
+									</th:block>
+								</td>
+								
+							</tr>
+						</th:block>
+						<tr>
+							
+							<th><th:block th:text="#{role.name}" /></th>
+							<th><th:block th:text="#{role.messageType}"/></th>
+							<th><th:block th:text="#{role.entity}"/></th>
+							<th><span title="View">V</span></th>
+							<th><span title="Operate">O</span></th>
+							<th><span title="Create / Edit">CE</span></th>
+							<th><th:block th:text="#{action.actions}" /></th>
+						</tr>
+						<th:block th:each="role : ${userDefinedRoles}">
+							<tr class="userDefinedRole">
+								
+								<td><th:block th:text="${role.name}" /></td>
+								<td>
+									<ul class="toggle">
+										<th:block th:each="messageType : ${role.messageTypes}">
+											<li><th:block th:text="${messageType}" /></li>
+										</th:block>
+									</ul>
+								</td>
+								<td>
+									<ul class="toggle">
+										<th:block th:each="internalEntity : ${role.internalEntities}">
+											<li><th:block th:text="${internalEntity}" /></li>
+										</th:block>
+									</ul>
+								</td>
+								<td class="text-center">
+									<input type="checkbox" class="checkRole" disabled="disabled" 
+										value="view" th:attr="data-roleid=${role.id}" />
+								</td>
+								<td class="text-center">
+									<input type="checkbox" class="checkRole checkRoleView" disabled="disabled" 
+										value="operate" th:attr="data-roleid=${role.id}" />
+								</td>
+								<td class="text-center">
+									<input type="checkbox" class="checkRole checkRoleView" disabled="disabled" 
+										value="createEdit" th:attr="data-roleid=${role.id}" />
+								</td>
+								<td class="actions">
+									<button class="btn btn-xs edit editRole" th:attr="data-roleid=${role.id}" title="Edit"></button>
+									<button class="btn btn-xs delete deleteRole" th:attr="data-roleid=${role.id}" title="Delete"></button>
+								</td>
+							</tr>
+						</th:block>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="clear"></div>
+	</div>
+	<div th:replace="fragments/fragments::footer"></div>
+</body>
+</html>

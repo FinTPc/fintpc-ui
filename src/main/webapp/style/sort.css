@@ -1,0 +1,49 @@
+.sortable{
+	cursor:pointer;
+}
+
+.sortable-icon{
+	display: inline-block;
+	margin: -3px 0px -3px 2px;
+	background-image: url(jquery/images/ui-icons_2e83ff_256x240.png);
+	background-position: -128px 0;
+	width: 16px;
+	height: 16px;
+	position: relative;
+	left: 3px;
+	up: 2px;
+}
+
+.sortable-icon-descending{
+	display: inline-block;
+	margin: -3px 0px -3px 2px;
+	background-image: url(jquery/images/ui-icons_2e83ff_256x240.png);
+	background-position: -64px -16px;
+	width: 16px;
+	height: 16px;
+	position: relative;
+	left: 3px;
+	up: 2px;
+}
+
+.sortable-icon-ascending{
+	display: inline-block;
+	margin: -3px 0px -3px 2px;
+	background-image: url(jquery/images/ui-icons_2e83ff_256x240.png);
+	background-position: 0 -16px;
+	width: 16px;
+	height: 16px;
+	position: relative;
+	left: 3px;
+	up: 2px;
+}
+
+.sortable{
+	color: white;
+}
+
+
+.selectedSort {
+	color: orange;
+	
+}

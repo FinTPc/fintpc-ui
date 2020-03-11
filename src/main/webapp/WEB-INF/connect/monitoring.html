@@ -1,0 +1,120 @@
+<!-- 
+* FinTP - Financial Transactions Processing Application
+* Copyright (C) 2013 Business Information Systems (Allevo) S.R.L.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>
+* or contact Allevo at : 031281 Bucuresti, 23C Calea Vitan, Romania,
+* phone +40212554577, office@allevo.ro <mailto:office@allevo.ro>, www.allevo.ro. -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<th:block th:replace="fragments/fragments::libs"></th:block>
+
+<script type="text/javascript" th:inline="javascript">
+	//<![CDATA[
+		
+	$(function(){
+		var jobsTable = $('<table >').addClass("fintpTable display").css("width", "100%");
+		var triggersTable = $('<table >').addClass("fintpTable display").css("width", "100%");
+		
+		$('#jobsTable').append(jobsTable);
+		$('#triggersTable').append(triggersTable);
+		
+		jobsTable.datatablesInit({
+			actions: {
+				get: 'monitoring/page-jobs',
+				start: 'monitoring/{group}/{rowid}/start-job',
+				stop: 'monitoring/{group}/{rowid}/stop-job'
+			},
+			columns: [ 
+				{ "title": [[#{monitoring.name}]], "data": "name" },
+				{ "title": [[#{monitoring.group}]], "data": "group" },
+				{ "title": [[#{monitoring.details}]], "data": "details" }
+//				{ "title": [[#{monitoring.params}]], "data": "params" }
+			]		
+		});
+		
+		triggersTable.datatablesInit({
+			actions: {
+				get: 'monitoring/page-triggers',
+				start: 'monitoring/{group}/{rowid}/start-trigger',
+				stop: 'monitoring/{group}/{rowid}/stop-trigger'
+			},
+			columns: [ 
+				{ "title": [[#{monitoring.name}]], "data": "name" },
+				{ "title": [[#{monitoring.group}]], "data": "group" },
+				{ "title": [[#{trigger.cron}]], "data": "cronExpression" },
+				{ "title": [[#{job.name}]], "data": "jobName" },
+				{ "title": [[#{trigger.state}]], "data": "triggerState" }
+			]
+		});
+		
+		$("#toggleCheck").change(function() {		
+			var isToggleChecked = $('#toggleCheck').is(':checked');
+			$('#getToggleCheck').val(isToggleChecked);
+			document.getElementById('toggle').submit();
+		})
+	});
+	
+	//]]>
+</script>
+
+<meta charset="ISO-8859-1" />
+<title><th:block th:text="${title}" /></title>
+</head>
+	<body>
+		<header th:replace="fragments/fragments::header"></header>
+		
+		<div class="container-fluid">
+		
+			
+			<div class="row">
+				<div class="col-md-6">
+					<div class="card">
+						<div class="card-body">		
+							<form action="#" th:action="@{monitoring/toggle}" method="post" id="toggle">
+								<input type="hidden" id="getToggleCheck" name="getToggleCheck" value="">												
+								<h4 class="card-title">Scheduler</h4>
+								<input type="checkbox" th:checked="${isToggled}" data-toggle="toggle" data-on="Start" data-off="Stop" id="toggleCheck" name="toggleCheck">	
+							</form>																
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<th:block th:if="${isToggled == false}">
+				<div class="row">
+					<div class="col-sm-6"><h3>Jobs</h3></div>
+					<div class="col-sm-6"><h3>Triggers</h3></div>
+				</div>
+				
+				<div class="row">
+					<div class="col-sm-6" id="jobsTable"></div>
+					<div class="col-sm-6" id="triggersTable"></div>
+				</div>
+			</th:block>
+			
+			<th:block th:unless="${isToggled == false}">
+				<div class="row">
+					<div class="text-center"><h3>Scheduler is off</h3></div>
+				</div>
+			</th:block>
+		</div>
+		
+		<footer th:replace="fragments/fragments::footer" id="footer"></footer>	
+	</body>
+</html>

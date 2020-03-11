@@ -1,0 +1,53 @@
+<!-- 
+* FinTP - Financial Transactions Processing Application
+* Copyright (C) 2013 Business Information Systems (Allevo) S.R.L.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>
+* or contact Allevo at : 031281 Bucuresti, 23C Calea Vitan, Romania,
+* phone +40212554577, office@allevo.ro <mailto:office@allevo.ro>, www.allevo.ro. -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+
+	<th:block th:replace="fragments/fragments::libs"></th:block>
+
+	<link rel="stylesheet" th:href="@{/style/jquery/timePicker.css}">
+	
+	<script th:src="@{/scripts/jquery/jquery-hunterTimepicker.js}"></script>
+	
+	<script type="text/javascript" th:inline="javascript">	
+		$('.time-picker').hunterTimePicker();
+	</script>
+
+	<meta charset="ISO-8859-1" />
+	<title><th:block th:text="${title}" /></title>
+</head>
+
+<body class="modal">
+	
+	<form method="post" th:action="${formAction}" style="margin: 2% 18%;"
+		>
+		
+		<div>Hour: <span><input type="text" class="time-picker" id="timePicker" name="timePicker" readonly></span></div>
+							
+		<input type="hidden" id="rowid" name="rowid" th:value="${rowid}">
+		<input type="hidden" id="isJobCreated" name="isJobCreated" th:value="${isJobCreated}">
+		<input type="hidden" id="bic" name="bic" th:value="${bic}">
+
+	</form>
+
+</body>
+</html>

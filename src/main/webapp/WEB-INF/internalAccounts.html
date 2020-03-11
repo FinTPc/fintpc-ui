@@ -1,0 +1,134 @@
+<!-- 
+* FinTP - Financial Transactions Processing Application
+* Copyright (C) 2013 Business Information Systems (Allevo) S.R.L.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>
+* or contact Allevo at : 031281 Bucuresti, 23C Calea Vitan, Romania,
+* phone +40212554577, office@allevo.ro <mailto:office@allevo.ro>, www.allevo.ro. -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:replace="fragments/fragments::libs"></th:block>
+
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	
+	$(function(){
+		var table = $('<table >').addClass("fintpTable display").css("width", "100%");
+		$('.table-wrapper').append(table);
+		
+		var beforeSave = function(form){
+			$('#internalAccountName').attr('disabled', false);
+		}
+		
+		table.datatablesInit({
+			actions: {
+				add: {
+					url: 'internal-accounts/add',
+					label: [[#{internalAccount.addInternalAccount}]]
+				},
+				get: 'internal-accounts/page',
+				edit: {
+					url: 'internal-accounts/{rowid}/edit',
+					before: beforeSave
+				},
+				delete: {
+					url: "internal-accounts/{rowid}/delete",
+					confirm: $$messages["internalAccount.confirm.delete"] 
+				}
+			},
+			columns: [ 
+				{ 
+					"title": [[#{internalAccount.entityName}]],
+					"data": "entityName",
+					"headerExtra": {
+						"data-filter": "dropdown",
+						"data-datasource": [[${entityNames}]]
+					}
+				},
+				{ "title": [[#{internalAccount.currency}]], "data": "currency"},
+				{ "title": [[#{internalAccount.accountNumber}]], "data": "accountNumber"},
+				{ 
+					"title": [[#{internalAccount.bic}]], 
+					"data": "bic",
+					"headerExtra": {
+						"data-filter": "dropdown",
+						"data-datasource": [[${bics}]]
+					}
+				},
+				{ "title": [[#{internalAccount.description}]], "data": "description"},
+				{ "title": [[#{internalAccount.locked}]], "data": "locked", 
+					"className" : 'dt-body-center change-box',
+					"headerExtra": {
+						"data-filter": "checkbox",
+						"data-datasource": '["Y", "N"]',
+					}, 
+					render: function ( data, type, row, meta ) {
+						return (row.locked=="Y"?'<span class="glyphicon glyphicon-ok" style="color:green"/>':"");
+					}  
+				},
+				{ "title": [[#{internalAccount.defaultAccount}]], "data": "defaultAccount",
+					"className" : 'dt-body-center ',
+					"headerExtra": {
+						"data-filter": "checkbox",
+						"data-datasource": '["Y","N"]'
+					}, 
+					render: function ( data, type, row, meta ) {
+						return (row.defaultAccount=='Y'?'<span class="glyphicon glyphicon-ok" style="color:green"/>':"");
+					} 
+				},
+				{ "title": [[#{internalAccount.otherDetails}]], "data": "otherDetails"},
+			]
+		});
+		
+		
+		/* var select = $("select").hide();
+		var selectParent = $(select).parent();
+		selectParent.append("<input type=\"checkbox\" name=\"" + $(select).attr("placeholder") + "\" value=\"Y\">Yes&nbsp;");		
+		var x ='';
+		$("input[type=radio]").on('click', function(e){
+			x = $(this).val();
+			if (e.ctrlKey){
+				console.log($(this).prop("checked", false));
+				x = '';
+			}
+			var y = $(this).parent().children().children().val(x);
+			console.log($(this).parent());
+			//$(y + ' option[value="'+x+'"]');
+		}); */
+			
+	});
+	
+	/*]]>*/
+</script>
+
+<meta charset="ISO-8859-1" />
+<title><th:block th:text="${title}" /></title>
+</head>
+<body >
+
+	<div th:replace="fragments/fragments::header"></div>
+
+	<div class="content">
+		<input id="apiUri" type="hidden" value="${apiUri}" />
+		
+		<div class="table-wrapper">
+			
+		</div>
+	</div>
+	<div th:replace="fragments/fragments::footer"></div>
+</body>
+</html>

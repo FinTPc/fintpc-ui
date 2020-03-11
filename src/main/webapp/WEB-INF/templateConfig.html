@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<th:block th:replace="fragments/fragments::libs"></th:block>
+<script>
+	//<![CDATA[
+		
+	$(function(){
+		var table = $('<table >').addClass("fintpTable display").css("width", "100%");
+		$('.table-wrapper').append(table);
+		
+		table.datatablesInit({
+			actions: {
+				add: {
+					url: 'templates-config/add',
+					label: '[[#{templates.addTemplate}]]'
+				},
+				get: 'templates-config/page',
+				edit: 'templates-config/{rowid}/edit',
+				view: 'templates-config/{rowid}/open',
+				delete: {
+					url: "templates-config/{rowid}/delete",
+					confirm: $$messages["templates.confirm.delete"]
+				}
+			},
+			columns: [ 
+				{ "title": '[[#{templates.name}]]', "data": "messagetype" },
+			]
+		});
+	});
+	
+	//]]>
+</script>
+<meta charset="ISO-8859-1">
+<title><th:block th:text="${title}" /></title>
+</head>
+<body>
+		<header th:replace="fragments/fragments::header"></header>
+		<div class="content">
+		<!-- <h2>
+			<th:block th:text="${param.businessArea[0]}" />
+		</h2> -->
+			<input id="apiUri" type="hidden" value="${apiUri}" /> 
+			
+			<div class="table-wrapper">
+
+			</div>		
+		</div>
+		
+		<footer th:replace="fragments/fragments::footer" id="footer"></footer>	
+	</body>
+</html>

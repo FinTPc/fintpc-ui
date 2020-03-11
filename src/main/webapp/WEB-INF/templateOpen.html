@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<th:block th:replace="fragments/fragments::libs"></th:block>
+<meta charset="ISO-8859-1">
+<title><th:block th:text="${title}" /></title>
+
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script th:inline="javascript">
+		
+</script>
+<script th:src="@{/scripts/templateConfig.js}"></script>
+</head>
+<style type="text/css">
+[hidden] {
+	display: none;
+}
+
+section {
+	margin: 5px;
+}
+
+label {
+	display: block;
+}
+
+label>span {
+	float: left;
+	margin-right: 5px;
+	min-width: 200px;
+}
+
+button[type='submit']:before {
+	content: "OK";
+}
+
+button.add:before {
+	content: "+ ";
+}
+
+button.remove:before {
+	content: "-";
+}
+
+input[data-xsd2html2xml-duration='days']+span:after {
+	content: " (days)";
+}
+
+input[data-xsd2html2xml-duration='minutes']+span:after {
+	content: " (minutes)";
+}
+</style>
+
+
+<body>
+	<header th:replace="fragments/fragments::header"></header>
+	<div class="content">
+		<input id="apiUri" type="hidden" value="${apiUri}" />
+		<div style="float: left; width: 20%">
+			<div style="display: table;margin:auto;"><span th:text=#{template.config.list}>List of templates: </span>&nbsp;
+				<select id="template" name="template" class="form-control">
+					<option ></option>
+						<option th:each="template: ${templates}"
+							th:value="${template.id}" th:selected="${template.id}==${templateId}" th:text="${template.messagetype}"></option>
+				</select>
+			</div>
+		</div>
+		<div class="table-wrapper" style="float: left;width:30%">
+			<div id="validationxsd" th:if="${template}" style="display:none;"
+				th:utext="${template.validationxsd}"></div>
+		</div>
+		<div id="options" class="option_div">
+			<object style="display:block;">
+				<div th:each="option, iterStat: ${options}" th:class="${iterStat.odd}?'option_div_left draggable':'option_div_none  draggable'" th:data-id="${option.id}" 
+					th:float=${display_div} id="optional" th:data-attr="${option.datasource}" th:data-caption="${option.name}" th:text="${option.name}">
+				</div>
+				<th:block th:if="${options}">
+					<p th:data-id="${iterStat}" id="optional" data-attr="edit" class="draggable option_p_edit" 
+						data-caption="edit"> Edit </p>
+					<div th:if="${options}" th:data-id="-1" id="optional" th:data-attr="entity" class="draggable option_div_entity" 
+						th:data-caption="entity" th:text="Entity">
+					</div>
+				</th:block>
+			</object>
+			<th:block th:if="${options}">
+				<button id="save"
+					class="submitButton glossy-button glossy-button--purple addButton">Save</button>
+			</th:block>
+		</div>
+	</div>
+	<footer th:replace="fragments/fragments::footer" id="footer"></footer>
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+		
+		var fields = /*[[${fields}]]*/;
+		var template = /*[[${template}]]*/;
+		
+	/*]]>*/
+</script>
+</body>
+</html>

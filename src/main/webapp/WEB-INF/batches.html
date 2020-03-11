@@ -1,0 +1,195 @@
+<!-- 
+* FinTP - Financial Transactions Processing Application
+* Copyright (C) 2013 Business Information Systems (Allevo) S.R.L.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>
+* or contact Allevo at : 031281 Bucuresti, 23C Calea Vitan, Romania,
+* phone +40212554577, office@allevo.ro <mailto:office@allevo.ro>, www.allevo.ro. -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<th:block th:replace="fragments/fragments::libs"></th:block>
+
+<link href="style/app.css"  rel="stylesheet" type="text/css"  />
+<link  href="style/content.css"  rel="stylesheet" type="text/css"  />
+
+	
+ <link href="style/jquery.dataTables.min.css" rel="stylesheet" /> 
+ <link href="style/dataTables.bootstrap.min.css" rel="stylesheet" /> 
+
+<script src="scripts/jquery.dataTables.min.js" ></script>
+<script src="scripts/dataTables.bootstrap.js"></script>
+
+
+<meta charset="ISO-8859-1" />
+<title><th:block th:text="${title}" /></title>
+</head>
+<body>
+
+	<div th:replace="fragments/fragments::header"></div>
+
+	<div class="content">
+	
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+		$(document).ready(function(){
+			
+			var allColumns = [
+				{
+					title: 'No', 
+					data: function(){
+						return '';
+					}
+				},
+				{
+					title : /*[[#{reports.headerBatchidMFI}]]*/,
+					data : 'filename',
+					//'condition' : '',
+					//'businessArea' : []
+				},
+				{
+					title : /*[[#{reports.headerBatchCount}]]*/,
+					data : 'txno',
+					//'condition' : '',
+					//'businessArea' : []
+				},
+				{
+					title : /*[[#{reports.headerTime}]]*/,
+					data : 'bdate',
+					//'condition' : '',
+					//'businessArea' : []
+				},
+				{
+					title : /*[[#{reports.headerSender}]]*/,
+					data : 'sender',
+					//'condition' : '',
+					//'businessArea' : []
+				},
+				{
+					title : /*[[#{reports.headerReceiver}]]*/,
+					data : 'receiver',
+					//'condition' : '',
+					//'businessArea' : []
+				},
+				{
+					title : /*[[#{reports.headerLastUpdated}]]*/,
+					data : 'username',
+					//'condition' : '',
+					//'businessArea' : []
+				}
+            ];
+			
+			var ba = /*[[${param.businessArea[0]}]]*/;
+			//compute params array
+			var params = {};
+			$('#params > :input').each(function(){
+				params[$(this).attr('name')] = $(this).attr('value');
+			});
+			
+			var columns = ["no"];
+			var postHeader = ['No'];
+			
+			$.each(allColumns, function(index, obj){
+				if (index > 0) {
+					columns.push(obj.data);
+					postHeader.push(obj.title);
+				}
+			});
+			
+			params['columnNames'] = JSON.stringify(columns);
+			
+			$('#params > :input[name^="columnNames"]').attr('value', JSON.stringify(columns));
+			
+			//headers for pdf and xlsx export
+			$('#params > :input[name^="columnHeaders"]').attr('value', JSON.stringify(postHeader));
+			
+			//datatables init
+		    var t = $('.datatable').DataTable({
+		    	"processing": true,
+		    	'serverSide': true,
+		    	'filter': false,
+		    	'columnDefs': [ { orderable: false, targets: [0] } ],
+		    	'columns': allColumns,
+		    	'order': [[1, "asc"]],
+		    	'ajax': {
+		    		url: 'batches/get.htm',
+		    		type: 'POST',
+		    		data: params
+		    	},
+		    	'createdRow': function(row, data, index) {
+		    		$('td', row).eq(0).html(t.page.len()*t.page.info().page+index+1);
+		    		
+		    		$(row).click(function(){
+		    			var sender = data.sender+"";
+		    			var filename = data.filename+"";
+		    			window.document.location = "viewBatch.htm?businessArea=" + ba + "&sender=" + sender + "&filename=" + filename + "&reportHeader=all";
+		    		});
+		    	}
+		    
+		    });
+			
+		    $('#ToPDF').click(function(){
+				$('form').attr('action', 'batches/toPDF.htm').submit();
+			});
+			
+			$('#ToExcel').click(function(){
+				$('form').attr('action', 'batches/toExcel.htm').submit();
+			});
+			
+		});
+		/*]]>*/
+	</script>
+	
+	<h2>
+		<th:block th:text="#{batches.title}" />
+	</h2>
+	
+	<br />
+	<div>
+		<input type="button" id="ToPDF" value="pdf" />
+		<input type="button" id="ToExcel" value="xlsx" />
+	</div>
+	
+	<div style="padding:45px 15px 15px;">
+		<table class="datatable display compact">
+			<!-- dynamic -->
+		</table>
+	</div>
+	<form method="get">
+		<div id="params">
+			<input name="businessArea" type="hidden" th:value="${param.businessArea[0]}" />
+			<input name="interval" type="hidden" th:value="${param.interval[0]}" />
+			<input name="direction" type="hidden" th:value="${param.direction[0]}" />
+			<input name="sender" type="hidden" th:value="${param.sender[0]}" /> 
+			<input name="receiver" type="hidden" th:value="${param.receiver[0]}" />
+			<input name="batchID" type="hidden" th:value="${param.batchID[0]}" />
+			<input name="fileType" type="hidden" th:value="${param.fileType[0]}" />
+			<input name="lastUpdated" type="hidden" th:value="${param.lastUpdated[0]}" />
+			
+			<input name="columnNames" type="hidden" value="" />
+			<input name="columnHeaders" type="hidden" value="" />
+		</div>
+	</form>
+	
+	
+
+	</div>
+	
+<div th:replace="fragments/fragments::footer"></div>
+
+</body>
+</html>

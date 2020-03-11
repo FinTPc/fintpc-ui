@@ -1,0 +1,142 @@
+<!-- 
+* FinTP - Financial Transactions Processing Application
+* Copyright (C) 2013 Business Information Systems (Allevo) S.R.L.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>
+* or contact Allevo at : 031281 Bucuresti, 23C Calea Vitan, Romania,
+* phone +40212554577, office@allevo.ro <mailto:office@allevo.ro>, www.allevo.ro. -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<th:block th:replace="fragments/fragments::libs"></th:block>
+
+<script th:inline="javascript">
+	/*<![CDATA[*/
+	var schemaId = [[${schema?.id}]];
+	
+	$(function(){
+		var table = $('<table>').addClass("fintpTable").css({
+			"width": "100%",
+			"table-layout": "fixed"
+			});
+		$('.content').append(table);
+		
+		var groupColumn = 0;
+		
+		var beforeRoutingRuleSubmit = function(form) {
+			//ids from routingrules_add.html
+			var action = $('#actionSelect').val();
+			var paramField = $('#actionValue');
+			
+			if (paramField.length > 0)
+				action += '(' + paramField.val() + ')';
+			
+			//set action using placeholders
+			$('#action').val(action);
+		}
+		
+		table.datatablesInit({
+			actions: {
+				add: {
+					url: [[@{/routing-rules/add}]],
+					label: [[#{routingrules.addRoutingRule}]],
+					before: beforeRoutingRuleSubmit,
+				},
+				get: [[@{/routing-rules/page}]],
+				edit: {
+					url: [[@{/routing-rules/{rowid}/edit}]],
+					before: beforeRoutingRuleSubmit
+				},
+				delete: {
+					url: [[@{/routing-rules/{rowid}/delete}]],
+					confirm: $$messages["routingrules.confirm.delete"]
+				}
+			},
+			columns: [
+				{
+					"title": [[#{routingrules.queuename}]],
+					"data": "queueName", 
+					"name": {"filterName": "queueEntity.name"}, 
+					"orderable": false
+				},
+				{ "title": [[#{routingrules.description}]], "data": "description", "orderable": false},
+				{ "title": [[#{routingrules.messagecondition}]], "data": "messageCondition", "orderable": false},
+				{ "title": [[#{routingrules.functioncondition}]], "data": "functionCondition", "orderable": false},
+				{ "title": [[#{routingrules.metadatacondition}]], "data": "metadataCondition", "orderable": false},
+				{ "title": [[#{routingrules.action}]], "data": "action", "orderable": false},
+				{ 
+					"title": [[#{routingrules.sequence}]],
+					"data": "sequence", 
+					"name": {"filterType": "number"},
+					"orderable": false
+				}
+				],
+			data: {id: schemaId},
+			drawCallback : function(settings) {
+				var api = this.api();
+				var rows = api.rows({
+					page : 'current'
+				}).nodes();
+				var last = null;
+
+				api.column(groupColumn, {
+					page : 'current'
+				})
+				.data()
+				.each(function(group, i) {
+					if (last !== group) {
+						$(rows).eq(i).before('<tr class="group" style="background-color:#f1f1f1"><td colspan="7"><b>'
+							+ group
+							+ '</b></td></tr>');
+
+						last = group;
+					}
+				});
+			},
+			orderFixed: {
+				pre: [ [0, 'asc'], [6, 'asc'] ]
+			}
+		});
+	});
+	
+	/*]]>*/
+</script>
+
+<meta charset="ISO-8859-1" />
+<title><th:block th:text="${title}" /></title>
+</head>
+<body >
+	<div th:replace="fragments/fragments::header"></div>
+	<div class="content">
+		<th:block th:switch="${#lists.isEmpty(schema)}">
+			<th:block th:case="false">
+				<h2>
+					<th:block th:text="#{routingrules.schema}" />
+				</h2>
+				<span><th:block th:text="#{routingschemas.name}" /> : <b><th:block
+							th:text="${schema.name}" /></b>;</span>
+				<span><th:block th:text="#{routingschemas.startLimit}" /> :
+					<b><th:block th:text="${schema.startLimitEntity.name}" /></b>;</span>
+				<span><th:block th:text="#{routingschemas.stopLimit}" /> :<b><th:block
+							th:text="${schema.stopLimitEntity.name}" /> </b>;</span>
+			</th:block>
+		</th:block>
+		<br />
+	</div>
+	<div th:replace="fragments/fragments::footer"></div>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!-- 
+* FinTP - Financial Transactions Processing Application
+* Copyright (C) 2013 Business Information Systems (Allevo) S.R.L.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>
+* or contact Allevo at : 031281 Bucuresti, 23C Calea Vitan, Romania,
+* phone +40212554577, office@allevo.ro <mailto:office@allevo.ro>, www.allevo.ro. -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<th:block th:replace="fragments/fragments::libs"></th:block>
+
+	<link href="./style/app.css" rel="stylesheet" type="text/css" />
+	<link href="./style/content.css" rel="stylesheet" type="text/css" />
+	<link th:href="@{/libs/bootstrap/bootstrap.min.css}" rel="stylesheet"/>
+	<link th:href="@{/libs/bootstrap/bootstrap-datetimepicker.min.css}"  rel="stylesheet" type="text/css"  />
+	<link th:href="@{/libs/bootstrap/bootstrap-dialog.min.css}"  rel="stylesheet" type="text/css"  />
+	<link th:href="@{/libs/bootstrap/bootstrap-multiselect.css}"  rel="stylesheet" type="text/css"  />
+	<link th:href="@{/libs/bootstrap/bootstrap-grid.css}"  rel="stylesheet" type="text/css"  />
+	
+	<link th:href="@{/style/jqueryDataTable/jquery.dataTables.min.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/style/jqueryDataTable/fixedHeader.dataTables.min.css}" rel="stylesheet" type="text/css" />
+	
+	<link th:href="@{/style/content.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/style/app.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/style/home.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/style/fintpTable.css}" rel="stylesheet" />
+	
+<!-- 	<link th:href="@{/libs/jquery-ui-1.12.1/jquery-ui.css}" rel="stylesheet" /> -->
+
+	<script th:src="@{/scripts/locale.js}"></script>
+	<script th:src="@{/libs/jquery/jquery-3.3.1.min.js}"></script>
+<!-- 	<script th:src="@{/libs/jquery-ui-1.12.1/jquery-ui.js}"></script> -->
+	<script th:src="@{/scripts/jquery.numeric.js}"></script>
+
+	<script th:src="@{/scripts/dialog.js}"></script>
+	
+	<script th:src="@{/scripts/validations.js}"></script>
+	
+	<script th:src="@{/scripts/renderControl.js}"></script>
+	
+	<script th:src="@{/scripts/jquery.dataTables.min.js}"></script>
+	<script th:src="@{/scripts/jqueryDataTable/dataTables.fixedHeader.min.js}"></script>
+	<script th:src="@{/scripts/jqueryDataTable/dataTables.Plugins.datetime.js}"></script>
+	
+	<script th:src="@{/scripts/datatables.init.js}"></script>
+	
+	<script th:src="@{/libs/bootstrap/bootstrap.min.js}"></script>
+	<script th:src="@{/scripts/moment.min.js}" ></script>
+	<script th:src="@{/libs/bootstrap/bootstrap-datetimepicker.min.js}" ></script>
+	<script th:src="@{/libs/bootstrap/bootstrap-dialog.min.js}" ></script>
+	<script th:src="@{/libs/bootstrap/bootstrap-multiselect.js}" ></script>
+	<script th:src="@{/scripts/daterangepicker.js}"></script>
+	<script th:src="@{/libs/jquery/jquery.timepicker.min.js}"></script>
+	
+	<script th:src="@{/scripts/datetime.js}"></script>
+	<script th:src="@{/scripts/uiControls.js}"></script>
+	<script th:src="@{/scripts/chart/numeric.min.js}"></script>
+	<script th:src="@{/scripts/chart/plotly-latest.min.js}"></script>
+	<script th:src="@{/scripts/home.js}"></script>
+	
+	<meta charset="ISO-8859-1" />
+	<title><th:block th:text="${title}" /></title>
+</head>
+<body >
+	<script>		
+			var update = "[[#{header.update}]]"		
+			console.log("[[${ip}]]");
+			console.log("[[${host}]]");
+	</script>
+	<div id="alert">
+	
+	 
+	</div>
+	<div th:replace="fragments/fragments::header"></div>
+	
+	<div id="content">
+		<div class="container-fluid">
+			<div class="row">
+
+	            <div class="col-xl-3 col-md-6 mb-4">
+	              <div class="card border-left shadow h-100 py-2">
+	                <div class="card-body">
+	                  <div class="row no-gutters align-items-center">
+	                    <div class="col mr-2">
+	                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1" th:text="#{home.transactions.row2}">Pending Requests</div>
+	                      <div class="h5 mb-0 font-weight-bold text-gray-800" id="transaction-queue">N/A</div>
+	                    </div>	                    
+	                  	<div class="col-auto">
+	                      <i class="glyphicon glyphicon-signal"></i>
+	                    </div>
+	                  </div>
+	                </div>
+	              </div>
+	            </div>
+	
+	            <div class="col-xl-3 col-md-6 mb-4">
+	              <div class="card border-left shadow h-100 py-2">
+	                <div class="card-body">
+	                  <div class="row no-gutters align-items-center">
+	                    <div class="col mr-2">
+	                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1" th:text="#{home.transactions.row1}">Pending Requests</div>
+	                      <div class="h5 mb-0 font-weight-bold text-gray-800" id="queue-transaction">N/A</div>
+	                    </div>	         
+	                  </div>
+	                </div>
+	              </div>
+	            </div>
+	
+	            <div class="col-xl-3 col-md-6 mb-4">
+	              <div class="card border-left shadow h-100 py-2">
+	                <div class="card-body">
+	                  <div class="row no-gutters align-items-center">
+	                    <div class="col mr-2">
+	                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1" th:text="#{home.processing.row1}">Pending Requests</div>
+	                      <div class="h5 mb-0 font-weight-bold text-gray-800" id="processing-event-error">N/A</div>
+	                    </div>	                    
+	                  </div>
+	                </div>
+	              </div>
+	            </div>
+	
+	            <!-- Pending Requests Card Example -->
+	            <div class="col-xl-3 col-md-6 mb-4">
+	              <div class="card border-left shadow h-100 py-2">
+	                <div class="card-body">
+	                  <div class="row no-gutters align-items-center">
+	                    <div class="col mr-2">
+	                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1" th:text="#{home.processing.row2}">Pending Requests</div>
+	                      <div class="h5 mb-0 font-weight-bold text-gray-800" id="processing-event-total">N/A</div>
+	                    </div>	                    
+	                  </div>
+	                </div>
+	              </div>
+	            </div>
+	          </div>
+		</div>	
+	</div>
+	<div class="graphics">
+	<!-- insert here graphics -->
+		<div id="myDiv" style="display:inline-block;width:50%">
+			
+		</div>
+		<div id="myDiv2" style="display: inline-block;">
+			<span style="display:none" th:text="#{home.no.transaction}">No transactions</span>
+		</div>
+	</div>	
+	<div th:replace="fragments/fragments::footer"></div>
+</body>
+</html>

@@ -1,0 +1,425 @@
+<!-- 
+* FinTP - Financial Transactions Processing Application
+* Copyright (C) 2013 Business Information Systems (Allevo) S.R.L.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>
+* or contact Allevo at : 031281 Bucuresti, 23C Calea Vitan, Romania,
+* phone +40212554577, office@allevo.ro <mailto:office@allevo.ro>, www.allevo.ro. -->
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org">
+<head>
+<th:block th:fragment="libs">
+	<meta name="_csrf" id="_csrf" th:content="${_csrf.token}" />
+	<meta name="_csrf_header" id="_csrf_header"
+		th:content="${_csrf.headerName}" />
+
+	<link rel="shortcut icon" type="image/png"
+		th:href="@{/images/favicon.ico}" />
+	<link th:href="@{/style/daterangepicker.css}" rel="stylesheet" />
+	<link th:href="@{/libs/bootstrap/bootstrap.min.css}" rel="stylesheet" />
+	<link th:href="@{/libs/bootstrap/bootstrap-datetimepicker.min.css}"
+		rel="stylesheet" type="text/css" />
+	<link th:href="@{/libs/bootstrap/bootstrap-dialog.min.css}"
+		rel="stylesheet" type="text/css" />
+	<link th:href="@{/libs/bootstrap/bootstrap-multiselect.css}"
+		rel="stylesheet" type="text/css" />
+	<link th:href="@{/libs/bootstrap/bootstrap-toggle.min.css}"
+		rel="stylesheet" type="text/css" />
+
+	<link th:href="@{/style/jqueryDataTable/jquery.dataTables.min.css}"
+		rel="stylesheet" type="text/css" />
+	<link
+		th:href="@{/style/jqueryDataTable/fixedHeader.dataTables.min.css}"
+		rel="stylesheet" type="text/css" />
+
+	<link th:href="@{/style/content.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/style/app.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/style/fintpTable.css}" rel="stylesheet" />
+
+	<!-- 	<link th:href="@{/libs/jquery-ui-1.12.1/jquery-ui.css}" rel="stylesheet" /> -->
+
+	<script th:src="@{/scripts/locale.js}"></script>
+	<script th:src="@{/libs/jquery/jquery-3.3.1.min.js}"></script>
+	<!-- 	<script th:src="@{/libs/jquery-ui-1.12.1/jquery-ui.js}"></script> -->
+	<script th:src="@{/scripts/jquery.numeric.js}"></script>
+
+	<script th:src="@{/scripts/dialog.js}"></script>
+
+	<script th:src="@{/scripts/validations.js}"></script>
+
+	<script th:src="@{/scripts/renderControl.js}"></script>
+
+	<script th:src="@{/scripts/jquery.dataTables.min.js}"></script>
+	<script
+		th:src="@{/scripts/jqueryDataTable/dataTables.fixedHeader.min.js}"></script>
+	<script
+		th:src="@{/scripts/jqueryDataTable/dataTables.Plugins.datetime.js}"></script>
+
+	<script th:src="@{/scripts/datatables.init.js}"></script>
+
+	<script th:src="@{/libs/bootstrap/bootstrap.min.js}"></script>
+	<script th:src="@{/scripts/moment.min.js}"></script>
+	<script th:src="@{/libs/bootstrap/bootstrap-datetimepicker.min.js}"></script>
+	<script th:src="@{/libs/bootstrap/bootstrap-dialog.min.js}"></script>
+	<script th:src="@{/libs/bootstrap/bootstrap-multiselect.js}"></script>
+	<script th:src="@{/libs/bootstrap/bootstrap-toggle.min.js}"></script>
+	<script th:src="@{/scripts/daterangepicker.js}"></script>
+	<script th:src="@{/libs/jquery/jquery.timepicker.min.js}"></script>
+
+	<script th:src="@{/scripts/datetime.js}"></script>
+	<script th:src="@{/scripts/uiControls.js}"></script>
+
+	<!-- <link rel="shortcut icon" th:href="@{/images/favicon.ico}" />
+	<link rel="icon" th:href="@{/images/favicon.ico}"  type="image/gif" /> -->
+	<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+		var $$actionCreate = [[#{action.create}]];
+		var $$actionCancel = [[#{action.cancel}]];
+		var $$actionUpdate = [[#{action.update}]];
+		var $$actionClose = [[#{action.close}]]
+		var $$actionImport = [[#{action.import}]];
+		var $$actionDelete = [[#{action.delete}]];
+		var $$actionOk = [[#{action.ok}]];
+		var $$actions = [[#{action.actions}]];
+		var pin = /*[[${session.banner}]]*/;
+					
+		var $$hasModifyRole = [[${hasModifyRole}]];
+
+		var $$confirmLive = [[#{warning.confirmLive}]];
+		
+		var $$messages = {
+				"externalEntity.confirm.delete": [[#{externalEntity.confirm.delete}]],
+				"bank.confirm.delete": [[#{bank.confirm.delete}]],
+				"externalAccount.confirm.delete": [[#{externalAccount.confirm.delete}]],
+				"internalAccount.confirm.delete": [[#{internalAccount.confirm.delete}]],
+				"internalEntity.confirm.delete": [[#{internalEntity.confirm.delete}]],
+				"queues.confirm.delete": [[#{queues.confirm.delete}]],
+				"reports.search": [[#{reports.search}]],
+				"routingrules.confirm.delete": [[#{routingrules.confirm.delete}]],
+				"routingschemas.confirm.delete": [[#{routingschemas.confirm.delete}]],
+				"timelimit.confirm.delete": [[#{timelimit.confirm.delete}]],
+				"connect.confirm.delete": [[#{connect.confirm.delete}]],
+				"error.conflict": [[#{error.conflict}]],
+				"general.search": [[#{general.search}]],
+				"error.forbidden": [[#{error.forbidden}]],
+				"template.confirm.delete": [[#{template.confirm.delete}]],
+				"reonciliation.confirm.delete": [[#{reonciliation.confirm.delete}]]}
+		
+		$(function(){
+			//setBreadCrumbs();
+			setPin(pin);
+			var beginDate = moment().subtract(3, 'months').startOf('day').format('YYYY-MM-DD HH:mm:ss');
+			var endDate = moment().endOf('day').format('YYYY-MM-DD HH:mm:ss');
+			var reports = $('#reports').children();
+			$.each(reports, function(i, value){
+				 var hrf = $(value).children().prop('href');
+				 hrf = hrf + '=' + beginDate + ' - ' + endDate;
+				 $(value).children().attr('href', hrf);
+			});
+					
+			$('.glyphicon-pushpin').on('click', function(){
+				pin *= -1;
+				$.ajax({
+					data : {
+						pin : pin
+					},
+					method : 'GET',
+					url : '/fintp_ui/pin',
+					dataType : 'json',
+				});
+				setPin(pin);	
+			});
+			
+			if ($(".breadcrumb").find("li").length ==0){
+				$(".breadcrumb").css("height", "40px");				
+			}
+		})
+		
+		function setPin(pin){
+			$('#pin').children().css('transform', 'rotate('+pin+'deg)');	
+			if (pin > 0){
+				$('#banner').css('display', 'none');
+				$('#top').css('display', 'none');
+			}else{
+				$('#banner').css('display', 'block');
+				$('#top').css('display', 'block');
+			}
+		}
+		
+		/*]]>*/
+	</script>
+</th:block>
+
+<!-- utilizat pe pagina queue.html -->
+<th:block th:fragment="libsQueue">
+	<style>
+#banner {
+	width: 100%;
+	position: fixed;
+	top: 0px;
+	background: white;
+	padding: 10px;
+	margin: 1px;
+}
+</style>
+	<link th:href="@{/style/app.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/style/content.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/libs/jquery-ui-1.12.1/jquery-ui.css}"
+		rel="stylesheet" />
+
+	<script th:src="@{/scripts/locale.js}"></script>
+	<script th:src="@{/libs/jquery/jquery-3.3.1.min.js}"></script>
+	<script th:src="@{/libs/jquery-ui-1.12.1/jquery-ui.js}"></script>
+	<link th:href="@{/style/reportsForm.css}" rel="stylesheet" />
+	<link th:href="@{/style/paginator.css}" rel="stylesheet" />
+	<link th:href="@{/libs/bootstrap/bootstrap.min.css}" rel="stylesheet" />
+
+	<script th:src="@{/libs/prime-ui/prime-ui-0.9.5.js}"></script>
+	<script th:src="@{/libs/prime-ui/paginator.js}"></script>
+	<script th:src="@{/scripts/paginatorMulti.js}"></script>
+	<script th:src="@{/scripts/sort2.js}"></script>
+	<script th:src="@{/scripts/batch.js}"></script>
+	<script th:src="@{/scripts/queue.js}"></script>
+	<script th:src="@{/scripts/queueactions.js}"></script>
+	<script th:src="@{/scripts/route.js}"></script>
+</th:block>
+<meta charset="ISO-8859-1" />
+</head>
+<body>
+
+	<div id="container">
+
+		<header th:fragment="header"
+			th:with="selectedLocale=${#locale.language}, locales=${new String[]{'en','ro'}}">
+			<div id="top"></div>
+
+			<div id="banner" class="navbar navbar-default">
+				<div id="left">
+					<img th:src="@{/images/allevo.jpg}" alt=""
+						style="width: 105px; height: 45px">
+				</div>
+				<div id="right">
+					<img src="https://allevo.ro/wp-content/themes/av/images/flags.png"
+						style="height: 50px;" alt="">
+				</div>
+				<div id="center"></div>
+			</div>
+
+			<nav class="navbar navbar-default">
+				<ul class="nav navbar-nav">
+					<li class="main-menu"><a th:href=@{/home?fp=Home}><th:block
+								th:text="#{header.menuHome}"></a></li>
+					<li class="main-menu"><a th:href="@{#}"><th:block
+								th:text="#{header.menuQueues}"></a>
+						<ul>
+							<th:block th:each="queue:${session.listTransactions}">
+								<li><a
+									th:href="@{/queues/}+${queue.name}+'?fp=header.menuQueues&fp='+${queue.label}">
+										<th:block th:text="${queue.label}" />
+								</a></li>
+							</th:block>
+						</ul></li>
+					<li class="main-menu"><a href="#"><th:block
+								th:text="#{header.menuReports}" /></a>
+						<ul >
+							<li><a
+								th:href="@{/events(fp=header.menuReports,fp=header.menuEvents)}"><th:block
+										th:text="#{header.menuEvents}" />
+								</a></li>
+								
+								<li><a th:href=@{/reconciliation?fp=header.menuReconciliation}><th:block
+								th:text="#{header.menuReconciliation}"></th:block></a>
+							</li>
+										
+							<th:block th:with="now=${#dates.createNow()}," id="reports">										
+								<th:block th:each="report:${session.listReports}">
+									<li><a
+										th:href="@{/reports/general/search(fp=header.menuReports,fp=${report},businessArea=${report},filter_insertdate_idate)}">
+											<th:block th:text="${report}" />
+									</a></li>
+								</th:block>
+							</th:block>
+						</ul></li>
+
+					<th:block th:insert="~{tracker/fragments::menu} ?: _"></th:block>
+
+					<li class="main-menu"><a href="#"><th:block
+								th:text="#{header.menuLists}" /></a>
+						<ul style="width: 202px;">
+							<li><a
+								th:href="@{/banks?fp=header.menuLists&fp=header.menuBanks}"><th:block
+										th:text="#{header.menuBanks}" /></a></li>
+							<li><a
+								th:href="@{/internal-entities?fp=header.menuLists&fp=header.menuIntEntities}"><th:block
+										th:text="#{header.menuIntEntities}" /></a></li>
+							<li><a
+								th:href="@{/internal-accounts?fp=header.menuLists&fp=header.menuIntAccList}"><th:block
+										th:text="#{header.menuIntAccList}" /></a></li>
+							<li><a
+								th:href="@{/external-entities?fp=header.menuLists&fp=header.menuExtEntities}"><th:block
+										th:text="#{header.menuExtEntities}" /></a></li>
+							<li><a
+								th:href="@{/external-accounts?fp=header.menuLists&fp=header.menuExtAccList}"><th:block
+										th:text="#{header.menuExtAccList}" /></a></li>
+						</ul>
+					</li>
+					
+					<li class="main-menu"><a href="#"><th:block
+								th:text="#{header.menuTemplates}" /></a>
+						<ul style="width: 202px;">
+							<li><a
+								th:href="@{/templates-config?fp=header.menuTemplates&fp=header.menuConfig}"><th:block
+										th:text="#{header.menuConfig}" /></a></li>
+							<li><a
+								th:href="@{/templates?fp=header.menuLists&fp=header.menuTemplates}"><th:block
+										th:text="#{header.menuTemplates}" /></a></li>
+							<li><a
+								th:href="@{/payment-create?fp=header.menuLists&fp=header.menuPaymentCreate}"><th:block
+										th:text="#{header.menuPaymentCreate}" /></a></li>
+						</ul>
+					</li>
+					<th:block th:insert="~{connect/fragments::menu} ?: _"></th:block>
+					<th:block th:insert="~{at/fragments::menu} ?: _"></th:block>
+
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<th:block th:switch="${session.isAuthentific}">
+						<th:block th:case="true">
+							<li class="main-menu"><a href="#"><th:block
+										th:text="#{header.menuAdministration}" /></a>
+								<ul>
+									<li><a
+										th:href="@{/queues/admin?fp=header.menuAdministration&fp=header.menuQueuesAdmin}"><th:block
+												th:text="#{header.menuQueuesAdmin}" /></a></li>
+									<li><a
+										th:href="@{/schemas?fp=header.menuAdministration&fp=header.menuSchemas}"><th:block
+												th:text="#{header.menuSchemas}" /></a></li>
+									<li><a
+										th:href="@{/routing-rules?fp=header.menuAdministration&fp=header.menuRules}"><th:block
+												th:text="#{header.menuRules}" /></a></li>
+									<li><a
+										th:href="@{/time-limits?fp=header.menuAdministration&fp=header.menuTimelimits}"><th:block
+												th:text="#{header.menuTimelimits}" /></a></li>
+									<li><a
+										th:href="@{/services?fp=header.menuAdministration&fp=header.menuServices}"><th:block
+												th:text="#{header.menuServices}" /></a></li>
+									<!-- 							<li><a th:href="@{/events.htm}"><th:block -->
+									<!-- 										th:text="#{header.menuEvents}" /></a></li> -->
+									<li><a
+										th:href="@{/users?fp=header.menuAdministration&fp=header.menuUsers}"><th:block
+												th:text="#{header.menuUsers}" /></a></li>
+									<li><a
+										th:href="@{/queues?fp=header.menuAdministration&fp=header.menuQueues}"><th:block
+												th:text="#{header.menuQueues}" /></a></li>
+								</ul></li>
+						</th:block>
+						<li><th:block th:switch="${session.isAuthentific}">
+								<th:block th:case="true">
+									<a href="#"> <th:block th:text="${session.userName}" />
+									</a>
+									<ul>
+										<li><a th:href="@{/logout}" title="logout"> <th:block
+													th:text="#{header.logoutText}" />
+										</a></li>
+									</ul>
+								</th:block>
+								<th:block th:case="false">
+									<a th:href="@{/login}" title="login"> <th:block
+											th:text="#{header.loginText}" />
+									</a>
+								</th:block>
+							</th:block></li>
+						<li>
+							<div class="localeSelector">
+								<select id="languageSelector" onChange="changeLocale(this);">
+									<option th:value="${selectedLocale}" selected="selected"
+										th:text="${selectedLocale}"></option>
+									<th:block th:each="locale : ${locales}">
+										<th:block th:if="${locale != selectedLocale}">
+											<option th:value="${locale}" th:text="${locale}"></option>
+										</th:block>
+									</th:block>
+								</select>
+							</div>
+						</li>
+						<li><a href="#" id="pin"> <span
+								class="glyphicon glyphicon-pushpin"
+								style="transform: rotate(pin)"></span>
+						</a></li>
+				</ul>
+			</nav>
+			<!-- breadcrumb -->
+			<nav aria-label="breadcrumb">
+				<span class="span-refresh breadcrumb-item"><a id="refresh"
+					th:href="@{/home?fp=Home}"
+					class="glossy-button glossy-button--purple addButton"
+					th:text="#{header.refresh}">Refresh</a></span>
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item " th:each="value : ${param.fp}"
+						th:text="${#messages.msgOrNull({value})?:value}">Home</li>
+				</ol>
+			</nav>
+			<div id="loader"></div>
+		</header>
+
+		<th:block th:fragment="xmlView">
+			<ul>
+				<div th:replace="fragments/fragments::xmlNode(parent=${parent})"></div>
+			</ul>
+		</th:block>
+
+		<th:block th:fragment="xmlNode">
+			<li th:with="nodeName=${parent.getNodeName()}, nodeValue=${parent.getFirstChild()}, nodeCcy=${parent.getAttribute('Ccy')}">
+				<span th:text="${nodeName+' '}"></span> 
+				<th:block th:if="${nodeValue != null and nodeValue.getNodeType() == T(org.w3c.dom.Node).TEXT_NODE}"
+						  th:with="nodeText=${nodeValue.getTextContent().trim()}">
+					<span style="font-weight: bold;" th:if="${!#strings.isEmpty(nodeCcy)}" th:text="${nodeCcy} + ' '"></span>
+					<span th:attr="data-path=${parent.getAttribute('xpath')}, data-type-editid=${parent.getAttribute('optionId')}"
+										 style="font-weight: bold;" th:if="${!#strings.isEmpty(nodeText)}" th:text="${nodeText}"></span>
+				</th:block> 
+				<th:block th:with="nodes=${parent.getChildNodes()}">
+					<ul>
+						<th:block th:each="i : ${#numbers.sequence(0, nodes.getLength())}">
+							<th:block th:with="node=${nodes.item(i)}">
+								<th:block
+									th:if="${node != null and node.getNodeType() == T(org.w3c.dom.Node).ELEMENT_NODE}">
+									<div th:replace="fragments/fragments::xmlNode(parent=${node})"></div>
+								</th:block>
+							</th:block>
+						</th:block>
+					</ul>
+				</th:block>
+			</li>
+		</th:block>
+
+
+		<footer th:fragment="footer" id="footer"
+			style="position: fixed; bottom: 0; left: 0; width: 100%;">
+			<nav class="navbar navbar-default" style="margin-bottom: 0px;">
+				<ul class="nav navbar-nav">
+					<li><a href="#" class="inactive">&#169;2019 Allevo</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="#">API</a></li>
+					<li><a href="https://fintp.org/category/blog/" target="_blank">Blog</a></li>
+					<li><a href="#">About</a></li>
+				</ul>
+			</nav>
+		</footer>
+	</div>
+</body>
+</html>

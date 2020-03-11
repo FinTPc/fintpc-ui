@@ -1,0 +1,323 @@
+<!-- 
+* FinTP - Financial Transactions Processing Application
+* Copyright (C) 2013 Business Information Systems (Allevo) S.R.L.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>
+* or contact Allevo at : 031281 Bucuresti, 23C Calea Vitan, Romania,
+* phone +40212554577, office@allevo.ro <mailto:office@allevo.ro>, www.allevo.ro. -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1"/>
+<title><th:block th:text="${title}"/></title>
+
+<th:block th:replace="fragments/fragments::libs"></th:block>
+
+<link href="style/app.css" rel="stylesheet" type="text/css}" />
+<link href="style/content.css" rel="stylesheet" type="text/css}" />
+<link href="style/fintpTable.css" rel="stylesheet}" />
+<link href="style/jquery/jquery-ui-1.10.4.custom.css" rel="stylesheet}" />
+<link href="libs/bootstrap/bootstrap.min.css" rel="stylesheet}" />
+<link href="style/jquery.dataTables.min.css" rel="stylesheet}" />	
+<link href="style/paginator.css" rel="stylesheet}" />
+<link href="style/reports.css" rel="stylesheet}" />
+
+
+<link href="libs/bootstrap/dataTables.bootstrap.min.css" rel="stylesheet}" />
+	
+
+<script src="scripts/jquery.dataTables.min.js"></script>
+</head>
+<body>
+<div th:fragment="trans">
+		<script th:inline="javascript">
+		// <![CDATA[
+		var rptHeader = [];
+		var params = {};
+		var ba = /*[[${param.businessArea[0]}]]*/;
+		
+		
+		$(document).ready(function(){
+			//columns for all reports are here
+			//filtering below
+			
+			var baAny = 'any';
+			var baFT = '0';
+			var baDI = '1';
+			var baDD = '2';
+			var baMFI = '3';
+			
+			
+			var allColumns = [
+	          	{
+	          		'title' : /*[[#{reports.headerTime}]]*/,
+	          		'data' : {'mData':'insertDate'},
+	          		'condition' : 'insertdateCheck',
+					'businessArea' : [baFT, baDI, baDD]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerMsgtype}]]*/,
+	          		'data' : {'mData':'msgtype'},
+	          		'condition' : 'msgtypeCheck',
+					'businessArea' : [baAny]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerSender}]]*/,
+	          		'data' : {'mData':'sender'},
+	          		'condition' : 'senderCheck',
+					'businessArea' : [baAny]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerReceiver}]]*/,
+	          		'data' : {'mData':'receiver'},
+	          		'condition' : 'receiverCheck',
+					'businessArea' : [baAny]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerTrn}]]*/,
+	          		'data' : {'mData':'trn'},
+	          		'condition' : 'trnCheck',
+					'businessArea' : [baAny]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerValuedate}]]*/,
+	          		'data' : {'mData':'valuedate'},
+	          		'condition' : 'valuedateCheck',
+					'businessArea' : [baFT, baDD, baMFI]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerIssuancedate}]]*/,
+	          		'data' : {'mData':'issdate'},
+	          		'condition' : 'issuanceCheck',
+					'businessArea' : [baDI]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerMaturitydate}]]*/,
+	          		'data' : {'mData':'matdate'},
+	          		'condition' : 'maturityCheck',
+					'businessArea' : [baDI]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerAmount}]]*/,
+	          		'data' : {'mData':'amount'},
+	          		'condition' : 'amountCheck',
+					'businessArea' : [baAny]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerCurrency}]]*/,
+	          		'data' : {'mData':'currency'},
+	          		'condition' : 'currencyCheck',
+					'businessArea' : [baAny]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerDbtaccount}]]*/,
+	          		'data' : {'mData':'dbtaccount'},
+	          		'condition' : 'dbtaccountCheck',
+					'businessArea' : [baFT, baDI, baDD]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerDbtcustname}]]*/,
+	          		'data' : {'mData':'dbtcustname'},
+	          		'condition' : 'dbtcustnameCheck',
+					'businessArea' : [baFT, baDI, baDD]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerDbtid}]]*/,
+	          		'data' : {'mData':'dbtid'},
+	          		'condition' : 'dbtidCheck',
+					'businessArea' : [baDI]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerOrdbank}]]*/,
+	          		'data' : {'mData':'ordbank'},
+	          		'condition' : 'ordbankCheck',
+					'businessArea' : [baFT]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerBenbank}]]*/,
+	          		'data' : {'mData':'benbank'},
+	          		'condition' : 'benbankCheck',
+					'businessArea' : [baFT]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerCdtaccount}]]*/,
+	          		'data' : {'mData':'cdtaccount'},
+	          		'condition' : 'cdtaccountCheck',
+					'businessArea' : [baFT, baDI, baDD]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerCdtcustname}]]*/,
+	          		'data' : {'mData':'cdtcustname'},
+	          		'condition' : 'cdtcustnameCheck',
+					'businessArea' : [baFT, baDI, baDD]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerCdtrid}]]*/,
+	          		'data' : {'mData':'cdtid'},
+	          		'condition' : 'cdtrCheck',
+					'businessArea' : [baDD]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerService}]]*/,
+	          		'data' : {'mData':'service'},
+	          		'condition' : 'serviceCheck',
+					'businessArea' : [baFT]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerDirection}]]*/,
+	          		'data' : {'mData':'direction'},
+	          		'condition' : 'directionCheck',
+					'businessArea' : [baFT, baDI, baDD]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerState}]]*/,
+	          		'data' : {'mData':'state'},
+	          		'condition' : 'stateCheck',
+					'businessArea' : [baAny]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerName}]]*/,
+	          		'data' : {'mData':'name'},
+	          		'condition' : 'nameCheck',
+					'businessArea' : [baMFI]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerPhone}]]*/,
+	          		'data' : {'mData':'phoneno'},
+	          		'condition' : 'phoneCheck',
+					'businessArea' : [baMFI]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerAccount}]]*/,
+	          		'data' : {'mData':'account'},
+	          		'condition' : 'accCheck',
+					'businessArea' : [baMFI]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerSourceBatchid}]]*/,
+	          		'data' : {'mData':'sourceFileName'},
+	          		'condition' : 'sourceBatchIDCheck',
+					'businessArea' : [baMFI]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerImportDate}]]*/,
+	          		'data' : {'mData':'insertdate'},
+	          		'condition' : 'importDateCheck',
+					'businessArea' : [baMFI]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerDestinationBatchid}]]*/,
+	          		'data' : {'mData':'batchid'},
+	          		'condition' : 'destinationBatchIDCheck',
+					'businessArea' : [baMFI]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerExportDate}]]*/,
+	          		'data' : {'mData':'updatedate'},
+	          		'condition' : 'exportDateCheck',
+					'businessArea' : [baMFI]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerQueueName}]]*/,
+	          		'data' : {'mData':'queueName'},
+	          		'condition' : 'queueNameCheck',
+					'businessArea' : [baMFI]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerLastUpdated}]]*/,
+	          		'data' : {'mData':'username'},
+	          		'condition' : 'lastUpdatedCheck',
+					'businessArea' : [baMFI]
+	          	},
+				{
+	          		'title' : /*[[#{reports.headerBatchid}]]*/,
+	          		'data' : {'mData':'batchid'},
+	          		'condition' : 'batchidCheck',
+					'businessArea' : [baFT, baDI, baDD]
+	          	}
+           	];
+			var checkedColumns;
+			//console.log(/*[[${param.reportHeader[0]}]]*/)
+			var prh = /*[[${param.reportHeader}]]*/;
+			
+			if(prh == null || prh == ""){
+				checkedColumns = "all";
+				
+			}
+			else{
+			
+				checkedColumns = prh[0];
+			}
+			//console.log(checkedColumns);
+			
+			//setup headers and content
+			rptHeader = [{title: 'No', data: function(){
+				return '';
+			}}];
+			var rptData = [{data: null}];
+			var postHeader = ['No'];
+			var postColumns = [''];
+			
+			$.each(allColumns, function(index, obj){
+				if (checkedColumns == 'all' && ($.inArray(ba, obj.businessArea) > -1 || $.inArray(baAny, obj.businessArea) > -1) || $.inArray(obj.condition, checkedColumns) > -1) {
+					rptHeader.push({'title': obj.title, 'data': obj.data.mData});
+					rptData.push(obj.data);
+				}
+				
+				if ($.inArray(ba, obj.businessArea) > -1 || $.inArray(baAny, obj.businessArea) > -1) {
+					postHeader.push(obj.title);
+					postColumns.push(obj.data.mData);
+				}
+			});
+			
+			//compute params array
+			$('#params > :input').each(function(){
+				params[$(this).attr('name')] = $(this).attr('value');
+			});
+			
+			/*
+			var columns = ["no"];
+			$('.datatable').find('th > input').each(function(){
+				columns.push($(this).attr('name'));
+			});*/
+			
+			params['columnNames'] = JSON.stringify(postColumns);
+			//db column names for server side sorting
+			$('#params > :input[name^="columnNames"]').attr('value', JSON.stringify(postColumns));
+			
+			/*
+			var headers = [];
+			$('.datatable').find('th').each(function(){
+				headers.push($(this).text());
+			});*/
+			
+			//headers for pdf and xlsx export
+			$('#params > :input[name^="columnHeaders"]').attr('value', JSON.stringify(postHeader));
+			
+			
+			//console.log(rptHeader);
+		});
+		
+		// ]]>
+	</script>
+	
+	
+	<table class="datatable display compact">
+		<!-- dynamic -->
+	</table>
+</div>
+</body>
+</html>

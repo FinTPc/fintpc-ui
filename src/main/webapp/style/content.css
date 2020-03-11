@@ -1,0 +1,236 @@
+.messagetypes-container {
+	margin:0px;
+	text-align: center;
+}
+
+.messagetypes-container ul ul {
+	display: none;
+}
+
+.messagetypes-container ul li:hover > ul {
+	display: block;
+}
+
+.messagetypes-container ul {
+	margin:0px;
+	background: #efefef; 
+	padding: 0 20px;
+	list-style: none;
+	position: relative;
+}
+
+.messagetypes-container ul:after {
+	content: ""; clear: both; display: block;
+}
+
+.messagetypes-container ul li {
+	float: left;
+}
+		
+.messagetypes-container ul li a {
+	display: block; padding: 10px 30px;
+	color: #757575; text-decoration: none;
+}
+			
+.messagetypes-container ul ul {
+	background: #5f6975; border-radius: 0px; padding: 0;
+	position: absolute; top: 100%;
+}
+
+.messagetypes-container ul ul li {
+	float: none; 
+	border-top: 1px solid #6b727c;
+	border-bottom: 1px solid #575f6a; position: relative;
+}
+
+.messagetypes-container ul ul li a {
+	font-size:16px;
+	padding: 5px 30px;
+	color: #fff;
+}	
+
+.messagetypes-container ul ul li a:hover {
+	background: #4b545f;
+}
+		
+.messagetypes-container ul ul ul {
+	position: absolute; 
+	left: 100%; top:0;
+}
+
+.uppercase{
+	 text-transform: uppercase;
+}
+.error
+{
+	color : #F20125;
+	
+}
+#add
+{
+	width: 160px; 
+	height: 20px;
+}
+textarea#address, textarea{
+	resize: none;
+	width:160px; 
+	height:70px;
+	padding: 0;
+}
+#country{
+	width:161px;
+	 height: 27px;
+	 text-align: center;
+}
+
+/* .modal { */
+/*     display: none; Hidden by default */
+/*     position: fixed; Stay in place */
+/*     z-index: 1; Sit on top */
+/*     left: 0; */
+/*     top: 0; */
+/*     overflow: auto; Enable scroll if needed */
+/*     background-color: rgb(0,0,0); Fallback color */
+/*     background-color: rgba(0,0,0,0.4); Black w/ opacity */
+/*     padding-top: 20px; */
+/*     padding-bottom:20px; */
+/*      background-color: #fefefe; */
+/*     margin: 15% 35% ; */
+/*     border: 1px solid #888; */
+/*     width: auto; Full width */
+/*     height: auto; Full height */
+/*     min-width: 30%; */
+/* } */
+
+/* Add Zoom Animation */
+.animate {
+    -webkit-animation: animatezoom 0.6s;
+    animation: animatezoom 0.6s
+}
+
+@-webkit-keyframes animatezoom {
+    from {-webkit-transform: scale(0)} 
+    to {-webkit-transform: scale(1)}
+}
+    
+@keyframes animatezoom {
+    from {transform: scale(0)} 
+    to {transform: scale(1)}
+}
+
+
+.twoColumns {
+	width: 100%;
+	float: left;
+}
+
+.column2 {
+	width: 50%;
+	float: left;
+	display: inline;
+}
+
+#banner {
+	width: 100%;
+	height: auto;
+	top: 3px;
+	background: white;
+	border: 0;
+	vertical-align: middle;
+	display: none;
+}
+
+#top {
+	width: 100%;
+	background-color: #f8f8f8;
+	height: 35px;
+	vertical-align: middle;
+	display: none;
+}
+
+#left {
+	float: left;
+	/* width: 30%; */
+	border-color: black;
+	border: 1px;
+	vertical-align: middle;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#right {
+	float: right;
+	width: 13%;
+	border-color: black;
+	border: 1px;
+	vertical-align: middle;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#center {
+	margin: 0 auto; 
+	width: 30%;
+}
+
+.arrow {
+	border: solid white;
+	border-width: 0 3px 3px 0;
+	display: inline-block;
+	padding: 3px;
+}
+
+.up {
+	transform: rotate(-135deg);
+	-webkit-transform: rotate(-135deg);
+}
+
+.up.black {
+	border-right-color: black;
+	border-bottom-color:  black;
+	margin-bottom: 5px;
+}
+
+.down {
+	transform: rotate(45deg);
+	-webkit-transform: rotate(45deg);
+}
+
+.down.black{
+	border-right-color: black;
+	border-bottom-color:  black;
+	margin-bottom: 5px;
+}
+
+.span-refresh {
+	position: absolute;
+    padding-top: 8px;
+    padding-right: 20px;
+    text-align: right;
+    width: 100%;
+    display: none;
+}
+
+.lh-condensed {
+    line-height: 1.25;
+}
+.bg-light{
+	background-color: #f8f9fa!important;
+}
+.savetemplate{
+	position:	absolute;
+	top:		12px;
+	margin-left:	105px;
+}
+.buttontemplate{
+	position: absolute;
+    top: 0px;
+    margin-left: 320px;
+    margin-top: 7px;
+    padding-left: 5px;
+    padding-top: 0px;
+    padding-right: 5px;
+    padding-bottom: 0px;
+}

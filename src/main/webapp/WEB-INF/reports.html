@@ -1,0 +1,416 @@
+<!-- 
+* FinTP - Financial Transactions Processing Application
+* Copyright (C) 2013 Business Information Systems (Allevo) S.R.L.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>
+* or contact Allevo at : 031281 Bucuresti, 23C Calea Vitan, Romania,
+* phone +40212554577, office@allevo.ro <mailto:office@allevo.ro>, www.allevo.ro. -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<th:block th:replace="fragments/fragments::libs"></th:block>
+
+<link th:href="@{/style/reports.css}" rel="stylesheet" />
+
+<link th:href="@{/style/reportsForm.css}" rel="stylesheet" />
+<script th:src="@{/scripts/reports.js}"></script>
+
+<link th:href="@{/style/sidebar.css}" rel="stylesheet" />
+<script th:src="@{/scripts/sidebar.js}"></script>
+
+
+<link rel="stylesheet" type="text/css"
+	href="https://cdn.datatables.net/1.10.18/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="https://cdn.datatables.net/buttons/1.5.6/css/buttons.dataTables.min.css" />
+
+<script type="text/javascript"
+	src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"
+	src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript"
+	src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.colVis.min.js"></script>
+
+<meta charset="ISO-8859-1" />
+<title><th:block th:text="${title}" /></title>
+</head>
+<body>
+
+	<div th:replace="fragments/fragments::header"></div>
+
+
+	<div class="content">
+		<div id="breadcrumb-page">
+			<input type="hidden" value="Report" /> <input type="hidden"
+				th:value="${param.businessArea[0]}" />
+		</div>
+		<h2>
+			<th:block th:text="${param.businessArea[0]}" />
+		</h2>
+		<!-- SEARCH CRITERIA -->
+		<div id="searchCriteria">
+			<!-- <b><th:block th:text="#{reports.criteria}" /></b>
+			<th:block th:text="#{reports.businessArea}" />
+			: <b><th:block th:text="${param.businessArea[0]}" /></b>
+			 <th:block
+				th:if="${not #strings.isEmpty(param.filter_messagetype_exact)}">
+				<th:block th:text="#{reports.headerMsgtype}" />: <b><th:block
+						th:text="${param.filter_messagetype_exact[0]}" /></b>
+			</th:block> -->
+			<span id="dynamicSearch"></span>
+			<!-- 	dynamic fields -->
+		</div>
+		<br />
+		<div>
+			<div class="sidebar">
+				<span class="title">Filter</span>
+				
+				<!--  <div>
+					<select class="savetemplate">
+						<option></option>
+						<option>SAVE - Filter</option>
+						<option>asdfert</option>
+					</select> <input type="button" value="Save" id="saveFilter" class="submitButton"
+						style="position: absolute; top: 0px; margin-left: 320px; margin-top: 7px; padding-left: 5px; padding-top: 0px; padding-right: 5px; padding-bottom: 0px;" />
+				</div>-->
+				
+				<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+				<form id="messagesForm" th:action="@{general/search}"
+					class="form-horizontal" method="get">
+					<div class="panel-group">
+						<div id="filter-payments" class="panel-collapse collapse in">
+							<div class="panel-body">
+								<div id="transactionType">
+									<label class="col-md-4 control-label"><th:block
+											th:text="#{reports.headerMsgtype}"></label>
+									<div class="col-md-8">
+										<select id="messageType" name="filter_messagetype_exact"
+											class="form-control" style="width: 83%">
+											<option selected="selected"></option>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- dynamic insert block -->
+					<div class="row">
+						<div class="form-group text-center">
+							<input type="submit" id="search"
+								class="submitButton glossy-button glossy-button--purple"
+								th:value="#{reportsForm.search}" style="width: inherit"></input>
+							<input type="reset" id="rst"
+								class="submitButton glossy-button glossy-button--purple"
+								th:value="#{action.clear}" style="width: inherit"></input>
+						</div>
+					</div>
+					<input type="hidden" name="reportHeader" id="reportHeader"></input>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div>
+		<button id="filter" class="btn btn-sm" onclick="openNav()">
+			<span class="glyphicon glyphicon-filter"></span>Filter
+		</button>
+		<button id="ToPDF" class="btn btn-sm">
+			<span class="glyphicon glyphicon-save"></span>Export PDF
+		</button>
+		<button id="ToExcel" class="btn btn-sm">
+			<span class="glyphicon glyphicon-save"></span>Export Excel
+		</button>
+		<button id="ToShowHide" class="btn btn-sm"
+			style="position: absolute; right: 10px;"
+			th:text="#{action.column.showhide}">Show/Hide Columns</button>
+	</div>
+
+
+	<!-- <div th:replace="transactions::trans"></div> -->
+
+	<table class="datatable fintpTable display compact" style="width: 100%">
+
+		<!-- dynamic -->
+	</table>
+
+	<script th:inline="javascript">
+		// <![CDATA[
+		var columnsSelected = [];
+		var checkeds = [];
+		$(document).ready(function(){
+			
+			var params = /*[[${param}]]*/;
+			
+			var selectedColumns = /*[[${param.columns}]]*/;
+			if (selectedColumns === null){
+				selectedColumns = [];
+			}
+			var businessArea = /*[[${param.businessArea[0]}]]*/;
+			
+			//set params for export
+			$('#params > input[name="params"]').val(JSON.stringify(params));						
+			params['columns'] = [];			
+			var columns = [{title: 'No', orderable: false, data: function(){
+				return '';
+			}}];
+			getData();
+			function getData(){
+				$.ajax({
+					data : {
+						businessArea : businessArea
+					},
+					method : 'GET',
+					url : '../message-results',
+					dataType : 'json',
+					success : function(data) {
+						
+						
+						$.each(data, function(key, value){
+							//if (selectedColumns.includes(value.field))
+								columns.push({
+									'title' : value.label,
+					          		'data' : value.field,
+					          		'name': {filterName: value.sortField},
+					          		'className': (value.field == 'amount')? 'dt-right':'',
+					          		'defaultContent': ""
+								});
+						});
+						initDatatable(columns, params, businessArea);
+						$.each(columns, function(item, column){
+							if (item > 0)
+								params.columns.push(column.data);
+						});
+						$('#params > input[name="params"]').val(JSON.stringify(params));
+						checkIfAllChecked();
+					}
+				});
+			}
+			
+			$('#ToPDF').click(function(){
+				$('#export').attr('action', 'toPDF').submit();
+			});
+			
+			$('#ToExcel').click(function(){
+				$('#export').attr('action', 'toExcel').submit();
+			});
+			
+			$('#ToShowHide').click(function(){
+				completModal(columns, [0]);
+			});
+			$('.panel-group').on('shown.bs.collapse',function(){
+				$(this).each(function(){
+					var div = $(this).find(".in");
+					$.each(div, function(i, val){
+						if (i > 0){
+							var id = val.id.replace("filter-", "");
+							var span = $('#'+id).children().find('span');
+							$(span[0]).removeClass('down');
+							$(span[0]).addClass('up');
+						}
+						
+					});
+					if ($(this).hasClass('in')){
+						alert('ura');
+					}
+				})
+			});
+			$('.panel-group').on('hide.bs.collapse',function(){
+				$(this).each(function(){
+					var div = $(this).find(".in");
+					$.each(div, function(i, val){
+						if (i > 0){
+							var id = val.id.replace("filter-", "");
+							var span = $('#'+id).children().find('span');
+							$(span[0]).removeClass('up');
+							$(span[0]).addClass('down');
+						}
+						
+					});
+					/* if ($(this).hasClass('in')){
+						alert('ura');
+					} */
+				})
+			});
+				
+		});
+						
+		function completModal(columns, withOut){
+			var div = $('#selectedColumns').clone().prop('id','selectedColumns1').css("display", "block");
+			div.find("#showColumnsFirst").prop('id', 'showColumnsAll').prop('name', 'showColumnsAll');
+			div.find('label:first-child').prop('for', 'showColumnsAll');
+			var label = $("#showColumns").clone().prop('id','');
+			$.each(columns, function(index, value){
+				var newLabel = label.clone();		
+				var id = "showColumns" + index;
+				newLabel.prop("for", id).css('display', 'block');
+				var check = newLabel.children();
+				var checked = true;
+				if (checkeds.indexOf("" + index) > -1){
+					checked = false;
+				}
+				check.prop('checked', checked).prop("name", id).prop("id", id).prop('value', index);				
+				columnsSelected.push(""+index);
+				newLabel.append(value.title);
+				if (-1 == withOut.indexOf(index)){	
+					div.append(newLabel);
+					//$("#selectedColumns").append(newLabel);					
+				}
+			});
+			createCloseDialog(div, [[#{action.column.showhide}]]);
+			checkIfAllChecked();
+			
+		}
+		
+		function checkIfAllChecked(){
+			var checkedValue = false;
+			if (0 == checkeds.length)
+				checkedValue = true;
+			$("#showColumnsAll").prop("checked", checkedValue);
+			$("#showColumnsFirst").prop("checked", checkedValue);
+		}
+		
+		function checkEvent(event){
+			var id = event.id;
+			var table = $(".datatable").DataTable();
+			if (id === 'showColumnsAll'){
+				columnsSelected = [];	
+				checkeds = [];
+				for (var i = 3; i < event.parentElement.parentElement.childNodes.length; i++){
+					var node = event.parentElement.parentElement.childNodes[i];
+					node.childNodes[0].nextSibling.checked = event.checked
+					let value = (node.childNodes[0].nextSibling.attributes['value'].nodeValue);
+					let column = table.column(value);
+					column.visible(event.checked);
+					if (event.checked === true){
+						columnsSelected.push(value);						
+					}else{
+						checkeds.push(value);
+					}
+				}	
+				columnsSelected = Array.from(new Set(columnsSelected));				
+			}else{
+				$("#showColumnsAll").prop("checked", false);
+				var column = table.column(event.value);
+				var visible = column.visible(); 
+				column.visible(!visible);
+				if (!visible){
+					columnsSelected.push(event.value);
+					let index = checkeds.indexOf("" + event.value);
+					checkeds.splice(index, 1);
+				}else{
+					var index = columnsSelected.indexOf("" + event.value);
+					if(index > -1){
+						columnsSelected.splice(index, 1);
+						checkeds.push(event.value);
+						checkeds = Array.from(new Set(checkeds));
+					}
+				}
+			}
+			checkIfAllChecked();
+		}
+		// ]]>
+	</script>
+
+	<form method="get" id="export">
+		<div id="params">
+			<input name="params" type="hidden" />
+		</div>
+	</form>
+
+	<div th:replace="fragments/fragments::footer"></div>
+
+
+	<!-- Modal -->
+	<div class="modal-body" id="selectedColumns" style="display: none">
+		<label for="showColumnsFirst"
+			style="display: block; vertical-align: middle;"> <input
+			type="checkbox" id="showColumnsFirst" name="showColumnsFirst"
+			onclick="checkEvent(this)"
+			style="margin: 0px; vertical-align: middle;"
+			th:text="#{action.checkbox.select.all}">
+		</label>
+	</div>
+
+	<!-- end modal -->
+
+	<!-- show filter -->
+	<div id="filter" style="display: none">
+		<div class="col-md-6" style="width: 100%">
+			<div class="form-group">
+				<div id="transactionType">
+					<label> <th:block th:text="#{reports.headerMsgtype}" />
+					</label>
+					<div>
+						<select id="messageType" name="filter_messagetype_exact"
+							class="form-control" style="width: 100%">
+							<option selected="selected"></option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row filters-row">
+			<div class="col-md-6">
+				<!-- inserted from js -->
+			</div>
+			<div class="col-md-6">
+				<!-- inserted from js -->
+			</div>
+		</div>
+		<div id="toggle" class="results-row" style="display: none;">
+			<table style="text-align: center;" class="table">
+				<tr>
+					<!-- inserted from js -->
+				</tr>
+				<tr>
+					<!-- inserted from js -->
+				</tr>
+			</table>
+			<input type="button"
+				class="submitButton glossy-button glossy-button--purple"
+				th:value="#{reportsForm.done}" id="closeHeadersButton" />
+		</div>
+	</div>
+	<!-- end show filter -->
+
+	<!-- input checkbox -->
+	<label for="showColumns" id="showColumns"
+		style="display: none; vertical-align: middle;"> <input
+		checked=true type="checkbox" name="showColumns"
+		onclick="checkEvent(this)" style="vertical-align: middle; margin: 0px">
+	</label>
+	<!-- end input checkbox -->
+
+	<!-- group box -->
+
+	<div class="panel" style="display: none" id="masterlabel">
+		<div class="panel-heading" style="border-bottom: 1px solid #FFF;">
+			<h4 class="panel-title" style="width: 100%">
+				<a data-toggle="collapse" href="#filter-payments"
+					style="box-sizing: border-box; width: 94%; display: inline-block">Payments<span
+					class="arrow down"></span></a>
+			</h4>
+		</div>
+		<div id="filter-payments" class="panel-collapse collapse">
+			<div class="panel-body"></div>
+		</div>
+
+	</div>
+
+	<!-- end group box -->
+</body>
+</html>

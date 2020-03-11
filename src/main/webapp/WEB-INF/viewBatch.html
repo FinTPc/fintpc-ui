@@ -1,0 +1,99 @@
+<!-- 
+* FinTP - Financial Transactions Processing Application
+* Copyright (C) 2013 Business Information Systems (Allevo) S.R.L.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>
+* or contact Allevo at : 031281 Bucuresti, 23C Calea Vitan, Romania,
+* phone +40212554577, office@allevo.ro <mailto:office@allevo.ro>, www.allevo.ro. -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+
+<th:block th:replace="fragments/fragments::libs"></th:block>
+
+<link href="style/app.css"  rel="stylesheet" type="text/css"  />
+<link  href="style/content.css"  rel="stylesheet" type="text/css"  />
+<link href="style/fintpTable.css" rel="stylesheet" />
+<link href="style/jquery.dataTables.min.css" rel="stylesheet" />
+
+<script src="scripts/jquery.dataTables.min.js" />
+
+
+<meta charset="ISO-8859-1" />
+<title><th:block th:text="${title}" /></title>
+</head>
+<body >
+
+	<div th:replace="fragments/fragments::header"></div>
+	
+	<div class="content">
+	
+	<h3>Batch details</h3>
+	
+	<div th:replace="transactions::trans"></div>
+	
+	<script th:inline="javascript">
+		// <![CDATA[
+		$(document).ready(function(){
+			//compute params array
+			$('#params > :input').each(function(){
+				params[$(this).attr('name')] = $(this).attr('value');
+			});
+			var columns = ["no"];
+			$('.datatable').find('th > input').each(function(){
+				columns.push($(this).attr('name'));
+			});
+			
+			params['columnNames'] = JSON.stringify(columns);
+			//console.log(params);
+			//datatables init
+		    var t = $('.datatable').DataTable({
+		    	'filter': false,
+		    	'columnDefs': [ { orderable: false, targets: [0] } ],
+		    	'columns' : rptHeader,
+		    	//'order': [[1, "asc"]],
+		    	'ajax': {
+		    		url: 'batches/getMessages.htm',
+		    		type: 'POST',
+		    		data: params
+		    	},
+		    	'createdRow': function(row, data, index) {
+		    		$('td', row).eq(0).html(t.page.len()*t.page.info().page+index+1);
+		    		
+		    		$(row).click(function(){
+		    			var id = data.correlid;
+		    			window.document.location = "viewMessage.htm?id=" + id + "&businessArea=" + ba;
+		    		});
+		    	}
+		    
+		    });
+		});
+		// ]]>
+		</script>
+	
+	<div id="params">
+		<input name="businessArea" type="hidden" th:value="${param.businessArea[0]}" />
+		<input name="sender" type="hidden" th:value="${param.sender[0]}" />
+		<input name="filename" type="hidden" th:value="${param.filename[0]}" />
+	</div>
+	
+	
+	</div>
+	
+	
+	<div th:replace="fragments/fragments::footer"></div>
+</body>
+</html>

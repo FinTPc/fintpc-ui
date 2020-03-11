@@ -1,0 +1,127 @@
+<!-- 
+* FinTP - Financial Transactions Processing Application
+* Copyright (C) 2013 Business Information Systems (Allevo) S.R.L.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>
+* or contact Allevo at : 031281 Bucuresti, 23C Calea Vitan, Romania,
+* phone +40212554577, office@allevo.ro <mailto:office@allevo.ro>, www.allevo.ro. -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+	<th:block th:replace="fragments/fragments::libs"></th:block>
+	<link href="style/app.css"  rel="stylesheet" type="text/css"  />
+	<link  href="style/content.css"  rel="stylesheet" type="text/css"  />
+
+	<meta charset="ISO-8859-1" />
+	<title><th:block th:text="${title}" /></title>
+</head>
+<script th:src="@{/scripts/paymentCreate.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+//<![CDATA[
+	var xsd=/*[[${validationXsd}]]*/;
+	var configs=/*[[${configs}]]*/;
+	var payments=/*[[${payments}]]*/;
+	var sample=/*[[${sample}]]*/;
+	var $$dropDowns=/*[[${dropDowns}]]*/;
+	
+$(function(){
+		
+	hideAll();
+	
+	$('#templates').change(function(){
+		var sel = $('#payments').val(); 
+		switch (sel){
+		case '1': 
+			getSimple($(this).val());
+			break;
+		case '2': 
+			getTemplate($(this).val());
+			$('#no').show();
+			break;
+		case '3': 
+			$('#no').hide();
+			getTemplate($(this).val());
+			break;
+		}
+	})
+	
+	$('#no').change(function(){
+		var mult = ($(this).val());
+		var el = $('#ulTab').children().length;
+		if (mult - el > 0){
+			multipliction($('#ulTab'), mult - el);
+		}else{
+			diminution($('#ulTab'), el - mult);
+		}
+	})
+	
+	$('#payments').change(function(){
+		hideAll();
+		if ($(this).val() == 1 ){
+			paymentSimple();
+		}else if($(this).val() == 2 || ($(this).val() == 3 )){
+			paymentComplex($(this).val());
+		}
+	});
+	
+	
+})
+//]]>
+</script>
+<body >
+	<header th:replace="fragments/fragments::header"></header>
+
+	<div class="content">
+		<div style="float: left; width: 20%;">
+			<div style="margin-bottom: 5px;">
+				<select id="payments" name="payments" class="form-control">
+					<option value="0"></option>
+					<option value="1">SIMPLE</option>
+					<option value="2">SIMPLE TEMPLATE</option>
+					<option value="3">MULTIPLE TEMPLATE</option>
+				</select>
+			</div>
+			<div style="display:block;margin-bottom: 5px;" id="div_sample">
+				
+			</div>
+			<div style="display:none;margin-bottom: 5px;" id="div_template">
+				<select id="templates" class="form-control">
+				<option></option>
+				
+				</select>
+			</div>
+			<div style="margin-bottom: 5px;">
+				<input id="no" type="number" min="1" max="10" value="1" class="form-control">
+			</div>
+		</div>
+		<div class="table-wrapper" style="float: left;width:30%">
+			<div class="container" id="container">
+				<ul class="nav nav-pills" id="ulTab">
+				    
+			  	</ul>
+			  	<div class="tab-content" id="tabContent">
+				    
+				</div>
+			  	<button id="createPayment">Create payment</button>
+			</div>
+		</div>
+		<div style="position: fixed;right: 30%;height: 75%;overflow:auto;">
+		</div>
+	</div>
+	
+	<footer th:replace="fragments/fragments::footer"></footer>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+	<th:block th:fragment="menu">
+		<li class="main-menu"><a href="#"><th:block th:text="#{header.menuConnect}" /></a>
+			<ul>
+				<li><a
+					th:href="@{/connects/connect?fp=header.menuConnect&fp=header.menuConnectList}">
+						<th:block th:text="#{header.menuConnectList}" />
+				</a></li>
+				
+				<li><a
+					th:href="@{/connects/monitoring?fp=header.menuConnect&fp=header.menuMonitoring}">
+						<th:block th:text="#{header.menuMonitoring}" />
+				</a></li>
+				
+				<li><a
+					th:href="@{/synchronized/synchronize?fp=header.menuConnect&fp=header.menuSynchronize}">
+						<th:block th:text="#{header.menuSynchronize}" />
+				</a></li>
+			</ul></li>
+			
+	</th:block>
+</body>
+</html>
